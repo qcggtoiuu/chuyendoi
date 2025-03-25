@@ -1,4 +1,67 @@
-$userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+<?php
+/**
+ * File chứa các hàm tiện ích cho hệ thống
+ */
+
+/**
+ * Lấy IP thực của người dùng
+ * @return string
+ */
+function getClientIP() {
+    $ip = '';
+    
+    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        // Nếu có nhiều IP, lấy IP đầu tiên
+        if (strpos($ip, ',') !== false) {
+            $ip = explode(',', $ip)[0];
+        }
+    } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    
+    // Nếu vẫn không xác định được IP hoặc IP là localhost
+    if (empty($ip) || $ip == '127.0.0.1' || $ip == '::1') {
+        // Sử dụng ipify.org để lấy IP thực
+        $externalIP = getExternalIP();
+        if (!empty($externalIP)) {
+            $ip = $externalIP;
+        }
+    }
+    
+    return filter_var(trim($ip), FILTER_VALIDATE_IP) ? $ip : '';
+}
+
+/**
+ * Lấy IP bên ngoài sử dụng ipify.org
+ * @return string
+ */
+function getExternalIP() {
+    try {
+        $response = @file_get_contents('https://api64.ipify.org?format=json');
+        if ($response) {
+            $data = json_decode($response, true);
+            if (isset($data['ip'])) {
+                return $data['ip'];
+            }
+        }
+    } catch (Exception $e) {
+        logError("Error getting external IP: " . $e->getMessage());
+    }
+    
+    return '';
+}
+
+/**
+ * Lấy thông tin trình duyệt
+ * @return array
+ */
+function getBrowserInfo() {
+    $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $browser = 'Unknown';
     $version = '';
     
@@ -514,68 +577,4 @@ function checkApiLimit($userId) {
     }
     
     return false;
-}<?php
-/**
- * File chứa các hàm tiện ích cho hệ thống
- */
-
-/**
- * Lấy IP thực của người dùng
- * @return string
- */
-function getClientIP() {
-    $ip = '';
-    
-    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-    } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        // Nếu có nhiều IP, lấy IP đầu tiên
-        if (strpos($ip, ',') !== false) {
-            $ip = explode(',', $ip)[0];
-        }
-    } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
-    
-    // Nếu vẫn không xác định được IP hoặc IP là localhost
-    if (empty($ip) || $ip == '127.0.0.1' || $ip == '::1') {
-        // Sử dụng ipify.org để lấy IP thực
-        $externalIP = getExternalIP();
-        if (!empty($externalIP)) {
-            $ip = $externalIP;
-        }
-    }
-    
-    return filter_var(trim($ip), FILTER_VALIDATE_IP) ? $ip : '';
 }
-
-/**
- * Lấy IP bên ngoài sử dụng ipify.org
- * @return string
- */
-function getExternalIP() {
-    try {
-        $response = @file_get_contents('https://api64.ipify.org?format=json');
-        if ($response) {
-            $data = json_decode($response, true);
-            if (isset($data['ip'])) {
-                return $data['ip'];
-            }
-        }
-    } catch (Exception $e) {
-        logError("Error getting external IP: " . $e->getMessage());
-    }
-    
-    return '';
-}
-
-/**
- * Lấy thông tin trình duyệt
- * @return array
- */
-function getBrowserInfo() {
-    $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-    $browser = 'Unknown';
