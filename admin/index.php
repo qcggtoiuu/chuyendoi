@@ -206,6 +206,11 @@ $pageTitle = 'Dashboard';
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="users.php">
+                            <i class="fas fa-users"></i> Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="settings.php">
                             <i class="fas fa-cog"></i> Settings
                         </a>

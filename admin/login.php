@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db = Database::getInstance();
         
         // Prepare statement
-        $stmt = $db->prepare("SELECT id, username, password_hash FROM users WHERE username = ?");
+        $stmt = $db->prepare("SELECT id, username, password_hash, role, is_approved FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -44,18 +44,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Verify password
             if (password_verify($password, $user['password_hash'])) {
-                // Set session variables
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                
-                // Update last login time
-                $stmt = $db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
-                $stmt->bind_param("i", $user['id']);
-                $stmt->execute();
-                
-                // Redirect to dashboard
-                header('Location: index.php');
-                exit;
+                // Check if user is approved
+                if ($user['is_approved']) {
+                    // Set session variables
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['role'] = $user['role'];
+                    
+                    // Update last login time
+                    $stmt = $db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
+                    $stmt->bind_param("i", $user['id']);
+                    $stmt->execute();
+                    
+                    // Redirect to dashboard
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    $error = 'Tài khoản của bạn đang chờ phê duyệt từ quản trị viên';
+                }
             } else {
                 $error = 'Tên đăng nhập hoặc mật khẩu không đúng';
             }
@@ -150,6 +156,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     
                     <button type="submit" class="btn btn-primary btn-block">Đăng Nhập</button>
+                    
+                    <div class="text-center mt-3">
+                        <p>Chưa có tài khoản? <a href="../register.php">Đăng ký</a></p>
+                    </div>
                 </form>
             </div>
         </div>

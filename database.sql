@@ -53,6 +53,8 @@ CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(50) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'manager', 'user') NOT NULL DEFAULT 'user',
+  is_approved BOOLEAN NOT NULL DEFAULT FALSE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   last_login DATETIME,
   UNIQUE KEY (username),
@@ -134,8 +136,4 @@ CREATE TABLE IF NOT EXISTS button_hide_logs (
   FOREIGN KEY (matching_pattern_id) REFERENCES fraud_patterns(id)
 );
 
--- Insert default admin user (username: quantri, password: randomly generated secure password)
-INSERT INTO users (username, password_hash, email) 
-VALUES ('quantri', '$2y$10$XK7mfbKZQAJBjAhbYm0kPeQkYfvN/JCpH3YYmtjwczGbNTEyHzKYe', 'admin@chuyendoi.io.vn')
-ON DUPLICATE KEY UPDATE id = id;
--- Default password: P8j2mK9xL5qR3sT7
+-- No default admin user - first registered user will be admin
