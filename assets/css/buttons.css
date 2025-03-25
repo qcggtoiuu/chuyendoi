@@ -1,0 +1,382 @@
+/*
+ * Interactive Buttons CSS
+ * 
+ * This file contains styles for the interactive buttons that can be embedded in client websites.
+ * The buttons will be hidden if the visitor is detected as a bot or matches a fraud pattern.
+ */
+
+/*@media (min-width: 992px){
+    .fab-wrapper{
+        display: none !important;
+    }
+}*/
+
+.fab-wrapper {
+    position: fixed;
+    bottom: 5px;
+    right: 0;
+    z-index: 9999999;
+}
+
+.fab-checkbox {
+    display: none !important;
+}
+
+.fab-checkbox:checked~ .devvn_bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+.fab {
+    width: 60px;
+    max-width: unset;
+    height: 60px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    border-radius: 50%;
+    background: #3961AA;
+    box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1000;
+    overflow: hidden;
+    transform: rotate(0deg);
+    -webkit-transition: all .15s cubic-bezier(.15,.87,.45,1.23);
+    transition: all .15s cubic-bezier(.15,.87,.45,1.23);
+}
+
+.fab-checkbox:checked~.fab {
+    transform: rotate(90deg);
+    -webkit-transition: all .15s cubic-bezier(.15,.87,.45,1.23);
+    transition: all .15s cubic-bezier(.15,.87,.45,1.23);
+}
+
+[class*=icon-cps-] {
+    display: inline-block;
+    vertical-align: middle;
+    background-image: url('https://dienmaytot.net.vn/wp-content/uploads/2022/06/webkhoinghiep.png')!important;
+    background-repeat: no-repeat;
+    background-size: 453px;
+}
+
+.icon-cps-fab-menu {
+    width: 50px;
+    height: 50px;
+    margin: 0 !important;
+    background-size: 694px;
+    background-position: -649px 0;
+}
+
+.fab-checkbox:checked~.fab .icon-cps-fab-menu {
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    background-size: 615px;
+    background-position: -291px -70px;
+}
+
+.fab-wheel {
+    width: 300px;
+    height: 220px;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    transform: scale(0);
+    transform-origin: bottom right;
+    transition: all .3s ease;
+    z-index: 12;
+}
+
+.fab-checkbox:checked~.fab-wheel {
+    transform: scale(1);
+}
+
+.fab-wheel .fab-action {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    position: absolute;
+    text-decoration: none;
+}
+
+.fab-wheel .fab-action-1 {
+    top: 0;
+    right: 0;
+}
+
+.fab-title {
+    float: left;
+    margin: 0 5px 0 0;
+    opacity: 0;
+}
+
+.fab-checkbox:checked~.fab-wheel .fab-title {
+    opacity: 1;
+}
+
+.fab-button {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    padding: 4px;
+    border-radius: 50%;
+    background: #0f1941;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
+    font-size: 24px;
+    color: White;
+    transition: all 1s ease;
+    overflow: hidden;
+}
+
+.icon-cps-local {
+    width: 28px;
+    height: 28px;
+    background-position: 0px -49px;
+}
+
+.fab-wheel .fab-button-1 {
+    background: #dd5145;
+}
+
+.fab-wheel .fab-action-2 {
+    top: 49px;
+    left: 137px;
+}
+
+.fab-wheel .fab-button-2 {
+    background: #fb0;
+}
+
+.icon-cps-phone {
+    width: 28px;
+    height: 28px;
+    background-position: -51px -49px;
+}
+
+.fab-wheel .fab-action-3 {
+    left: 50px;
+    bottom: 70px;
+}
+
+.fab-wheel .fab-button-3 {
+    background: #0f9d58;
+}
+
+.icon-cps-chat {
+    width: 30px;
+    height: 30px;
+    background-position: -369px 0px;
+}
+
+.fab-wheel .fab-action-4 {
+    left: 0;
+    bottom: 0;
+}
+
+.fab-wheel .fab-button-4 {
+    background: #2f82fc;
+}
+
+.icon-cps-chat-zalo {
+    width: 30px;
+    height: 30px;
+    background-position: -362px -1px;
+    background-size: 515px;
+}
+
+.suggestions-chat-box {
+    min-width: 140px;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #1d72e0;
+    border-radius: 10px;
+    background: #277cea;
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    position: fixed;
+    right: 80px;
+    bottom: 7%;
+    z-index: 11;
+}
+
+.hidden {
+    display: none!important;
+}
+
+.align-items-center {
+    -ms-flex-align: center!important;
+    align-items: center!important;
+    -ms-flex-pack: distribute!important;
+    justify-content: space-around!important;
+    display: -ms-flexbox!important;
+    display: flex!important;
+    -webkit-box-align: center!important;
+    -ms-flex-align: center!important;
+    align-items: center!important;
+}
+
+.suggestions-chat-box #btnClose {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+i.icon-cps-face {
+    width: 28px;
+    height: 28px;
+    background-position: -177px 0px;
+}
+
+.fab-checkbox:not(:checked)~.fab {
+    animation-name: zoom;
+    -webkit-animation-name: zoom;
+    animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    animation-duration: 1.5s;
+    -webkit-animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    cursor: pointer;
+    box-shadow: 0 0 0 0 #3961aa;
+}
+
+@-webkit-keyframes tada {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1)
+    }
+
+    10%,20% {
+        -webkit-transform: scale(.9) rotate(-3deg);
+        transform: scale(.9) rotate(-3deg)
+    }
+
+    30%,50%,70%,90% {
+        -webkit-transform: scale(1.1) rotate(3deg);
+        transform: scale(1.1) rotate(3deg)
+    }
+
+    40%,60%,80% {
+        -webkit-transform: scale(1.1) rotate(-3deg);
+        transform: scale(1.1) rotate(-3deg)
+    }
+
+    100% {
+        -webkit-transform: scale(1) rotate(0);
+        transform: scale(1) rotate(0)
+    }
+}
+
+@keyframes tada {
+    0% {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1)
+    }
+
+    10%,20% {
+        -webkit-transform: scale(.9) rotate(-3deg);
+        -ms-transform: scale(.9) rotate(-3deg);
+        transform: scale(.9) rotate(-3deg)
+    }
+
+    30%,50%,70%,90% {
+        -webkit-transform: scale(1.1) rotate(3deg);
+        -ms-transform: scale(1.1) rotate(3deg);
+        transform: scale(1.1) rotate(3deg)
+    }
+
+    40%,60%,80% {
+        -webkit-transform: scale(1.1) rotate(-3deg);
+        -ms-transform: scale(1.1) rotate(-3deg);
+        transform: scale(1.1) rotate(-3deg)
+    }
+
+    100% {
+        -webkit-transform: scale(1) rotate(0);
+        -ms-transform: scale(1) rotate(0);
+        transform: scale(1) rotate(0)
+    }
+}
+
+@-webkit-keyframes zoom {
+    0% {
+        transform: scale(.9)
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 15px transparent
+    }
+
+    100% {
+        transform: scale(.9);
+        box-shadow: 0 0 0 0 transparent
+    }
+}
+
+@keyframes zoom {
+    0% {
+        transform: scale(.9)
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 15px transparent
+    }
+
+    100% {
+        transform: scale(.9);
+        box-shadow: 0 0 0 0 transparent
+    }
+}
+
+/* Alternative button style */
+.bbas-mobile-contact-bar{
+    display:none 
+}
+
+.bbas-pc-contact-bar{
+    left: 30px;
+    bottom: 30px;
+    position: fixed;
+    z-index: 998;
+    margin-bottom:0
+}
+
+.bbas-pc-contact-bar li{
+    width: 44px;
+    height: 46px;
+    overflow: hidden;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.bbas-pc-contact-bar li.facebook{
+    margin-bottom: 15px;
+    background: url(https://baobianhsang.vn/wp-content/uploads/2021/09/fb.png);
+    background-repeat: no-repeat;
+}
+
+.bbas-pc-contact-bar li a{
+    display: block;
+    width: 44px;
+    height: 44px;
+}
