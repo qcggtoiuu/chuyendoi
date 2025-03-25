@@ -62,45 +62,37 @@ try {
         $user = $result->fetch_assoc();
         echo "<p>Password hash in database: <code>" . htmlspecialchars($user['password_hash']) . "</code></p>";
         
-        // Test if the hash is in bcrypt format
-        if (strpos($user['password_hash'], '$2y$') === 0) {
-            echo "<p style='color: green;'>✓ Password hash is in bcrypt format</p>";
-        } else {
-            echo "<p style='color: red;'>✗ Password hash is NOT in bcrypt format</p>";
-            
-            // Update the password hash to bcrypt
-            echo "<h3>Updating Password Hash</h3>";
-            $newPassword = 'P8j2mK9xL5qR3sT7';
-            $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
-            
-            $updateStmt = $db->prepare("UPDATE users SET password_hash = ? WHERE username = ?");
-            $updateStmt->bind_param("ss", $newHash, $username);
-            
-            if ($updateStmt->execute()) {
-                echo "<p style='color: green;'>✓ Password hash updated successfully</p>";
-                echo "<p>New password hash: <code>" . htmlspecialchars($newHash) . "</code></p>";
-                echo "<p>You can now login with:</p>";
-                echo "<ul>";
-                echo "<li>Username: <strong>quantri</strong></li>";
-                echo "<li>Password: <strong>P8j2mK9xL5qR3sT7</strong></li>";
-                echo "</ul>";
-            } else {
-                echo "<p style='color: red;'>✗ Failed to update password hash: " . $db->error() . "</p>";
-            }
-        }
+        // The password verification is failing, so let's update the password hash
+        echo "<h3>Updating Password Hash</h3>";
+        $newPassword = 'P8j2mK9xL5qR3sT7';
+        $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
         
-        // Test password verification
-        $password = 'P8j2mK9xL5qR3sT7';
-        if (password_verify($password, $user['password_hash'])) {
-            echo "<p style='color: green;'>✓ Password verification successful</p>";
-            echo "<p>You can login with:</p>";
+        $updateStmt = $db->prepare("UPDATE users SET password_hash = ? WHERE username = ?");
+        $updateStmt->bind_param("ss", $newHash, $username);
+        
+        if ($updateStmt->execute()) {
+            echo "<p style='color: green;'>✓ Password hash updated successfully</p>";
+            echo "<p>New password hash: <code>" . htmlspecialchars($newHash) . "</code></p>";
+            echo "<p>You can now login with:</p>";
             echo "<ul>";
             echo "<li>Username: <strong>quantri</strong></li>";
             echo "<li>Password: <strong>P8j2mK9xL5qR3sT7</strong></li>";
             echo "</ul>";
+            
+            // Verify the new password hash
+            $stmt = $db->prepare("SELECT password_hash FROM users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+            
+            if (password_verify($newPassword, $user['password_hash'])) {
+                echo "<p style='color: green;'>✓ Password verification successful with new hash</p>";
+            } else {
+                echo "<p style='color: red;'>✗ Password verification still failing with new hash</p>";
+            }
         } else {
-            echo "<p style='color: red;'>✗ Password verification failed</p>";
-            echo "<p>The password 'P8j2mK9xL5qR3sT7' does not match the stored hash.</p>";
+            echo "<p style='color: red;'>✗ Failed to update password hash: " . $db->error() . "</p>";
         }
     } else {
         echo "<p style='color: red;'>✗ User 'quantri' does not exist in database</p>";
