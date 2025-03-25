@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get form data
     $username = isset($_POST['username']) ? sanitizeInput($_POST['username']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $remember = isset($_POST['remember']) ? true : false;
     
     // Validate form data
     if (empty($username) || empty($password)) {
@@ -50,6 +51,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
+                    
+                    // Set session cookie lifetime if remember me is checked
+                    if ($remember) {
+                        // Set session cookie to last for 30 days
+                        ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30);
+                        ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
+                        
+                        // Regenerate session ID for security
+                        session_regenerate_id(true);
+                    }
                     
                     // Update last login time
                     $stmt = $db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");

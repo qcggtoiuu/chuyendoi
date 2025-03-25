@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("sssssss", $name, $domain, $apiKey, $phone, $zalo, $messenger, $maps);
             
             if ($stmt->execute()) {
-                $siteId = $db->lastInsertId();
+                $siteId = $db->getConnection()->insert_id;
                 $success = true;
                 
                 // Reset form

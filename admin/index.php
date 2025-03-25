@@ -91,7 +91,10 @@ $stmt = $db->prepare("
         c.click_type,
         COUNT(*) as total_clicks,
         (SELECT COUNT(*) FROM visits) as total_visits,
-        (COUNT(*) / (SELECT COUNT(*) FROM visits)) * 100 as conversion_rate
+        CASE 
+            WHEN (SELECT COUNT(*) FROM visits) > 0 THEN (COUNT(*) / (SELECT COUNT(*) FROM visits)) * 100 
+            ELSE 0 
+        END as conversion_rate
     FROM clicks c
     GROUP BY c.click_type
 ");

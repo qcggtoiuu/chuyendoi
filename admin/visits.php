@@ -89,7 +89,13 @@ $types .= "ii";
 // Get total count
 $stmt = $db->prepare($countQuery);
 if (!empty($types)) {
-    $stmt->bind_param($types, ...$params);
+    // Remove the last two parameters (offset and perPage) for the count query
+    $countParams = array_slice($params, 0, -2);
+    $countTypes = substr($types, 0, -2);
+    
+    if (!empty($countTypes)) {
+        $stmt->bind_param($countTypes, ...$countParams);
+    }
 }
 $stmt->execute();
 $totalCount = $stmt->get_result()->fetch_assoc()['total'];
@@ -98,10 +104,6 @@ $totalPages = ceil($totalCount / $perPage);
 // Get visits
 $stmt = $db->prepare($query);
 if (!empty($types)) {
-    // Remove the last two parameters (offset and perPage) for the count query
-    $countParams = array_slice($params, 0, -2);
-    
-    // Add them back for the main query
     $stmt->bind_param($types, ...$params);
 }
 $stmt->execute();
