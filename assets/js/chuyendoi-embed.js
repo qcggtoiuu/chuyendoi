@@ -42,12 +42,12 @@
         script.async = true;
         script.onload = function() {
             // Initialize tracker
-            window.Tracker.init({
-                apiKey: apiKey,
-                apiUrl: apiUrl,
-                buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar, .sticky-right-buttons',
-                debug: debug
-            });
+                window.Tracker.init({
+                    apiKey: apiKey,
+                    apiUrl: apiUrl,
+                    buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar, .group-left-sidebar',
+                    debug: debug
+                });
         };
         document.head.appendChild(script);
     };
@@ -171,22 +171,55 @@
             return ''; // No required contact methods provided
         }
         
-        let html = '<div class="sticky-right-buttons">';
+        let html = '<div class="group-left-sidebar">';
+        html += '    <div class="sidebar-container">';
         
-        // Phone button (always first)
+        // Phone button
         if (phone) {
-            html += `<a class="button-item call-button" href="tel:${phone}" rel="nofollow">`;
-            html += '<div class="button-icon call-icon"></div>';
-            html += '</a>';
+            html += '        <div class="sidebar-item sidebar-cskh-btn">';
+            html += `            <a href="tel:${phone}">`;
+            html += '                <div class="ring">';
+            html += '                    <div class="coccoc-alo-phone coccoc-alo-green coccoc-alo-show">';
+            html += '                        <div class="coccoc-alo-ph-circle-fill"></div>';
+            html += '                        <div class="coccoc-alo-ph-img-circle">';
+            html += '                            <img src="https://vuanem.com/image/icon/icons-phone-50.png" alt="Phone Icon" width="25px" height="25px">';
+            html += '                        </div>';
+            html += '                    </div>';
+            html += '                </div>';
+            html += '            </a>';
+            html += '        </div>';
         }
-        
-        // Zalo button (always second)
+
+        // Zalo button
         if (zalo) {
-            html += `<a class="button-item zalo-button" href="${zalo}" target="_blank" rel="nofollow noopener">`;
-            html += '<div class="button-icon zalo-icon"></div>';
-            html += '</a>';
+            html += '        <div class="sidebar-item" id="sidebar-zalo-btn">';
+            html += `            <a href="${zalo}" target="_blank">`;
+            html += '                <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+            html += '                    <circle cx="22.5" cy="22.5" r="22.5" fill="#133EBF"></circle>';
+            html += '                    <rect x="8" y="10" width="28" height="28" fill="url(#pattern0_11239_19047)"></rect>';
+            html += '                    <defs>';
+            html += '                        <pattern id="pattern0_11239_19047" patternContentUnits="objectBoundingBox" width="1" height="1">';
+            html += '                            <use xlink:href="#image0_11239_19047" transform="scale(0.00166667)"></use>';
+            html += '                        </pattern>';
+            html += '                        <linearGradient id="paint0_linear_11239_19047" x1="22.5" y1="0" x2="22.5" y2="45" gradientUnits="userSpaceOnUse">';
+            html += '                            <stop stop-color="#133EBF"></stop>';
+            html += '                            <stop offset="1" stop-color="#133EBF"></stop>';
+            html += '                        </linearGradient>';
+            html += '                        <image id="image0_11239_19047" width="600" height="600" xlink:href="https://vuanem.com/images/zalo-logo.webp"></image>';
+            html += '                    </defs>';
+            html += '                </svg>';
+            html += '            </a>';
+            html += '        </div>';
         }
         
+        // Scroll to top button (optional)
+        html += '        <div class="sidebar-item sidebar-cskh-btn" id="scrollTopBtn" style="display: none;">';
+        html += '            <div class="chevron-up">';
+        html += '                <img src="https://270349907.e.cdneverest.net/fast/filters:format(webp)/vuanem.com/image/chevron-up.png">';
+        html += '            </div>';
+        html += '        </div>';
+        
+        html += '    </div>';
         html += '</div>';
         
         return html;

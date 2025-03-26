@@ -732,6 +732,56 @@ export default ChuyenDoiTracker;
                 $(this).tooltip('hide');
             }, 1000);
         });
+        
+        // Update button preview when style is changed
+        document.getElementById('button_style').addEventListener('change', function() {
+            const selectedStyle = this.value;
+            const phone = document.getElementById('phone').value;
+            const zalo = document.getElementById('zalo').value;
+            const messenger = document.getElementById('messenger').value;
+            const maps = document.getElementById('maps').value;
+            const showButtons = document.getElementById('show_buttons').checked;
+            
+            // Create a form to submit the data
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.style.display = 'none';
+            
+            // Add the fields
+            const styleField = document.createElement('input');
+            styleField.name = 'button_style';
+            styleField.value = selectedStyle;
+            form.appendChild(styleField);
+            
+            const phoneField = document.createElement('input');
+            phoneField.name = 'phone';
+            phoneField.value = phone;
+            form.appendChild(phoneField);
+            
+            const zaloField = document.createElement('input');
+            zaloField.name = 'zalo';
+            zaloField.value = zalo;
+            form.appendChild(zaloField);
+            
+            const messengerField = document.createElement('input');
+            messengerField.name = 'messenger';
+            messengerField.value = messenger;
+            form.appendChild(messengerField);
+            
+            const mapsField = document.createElement('input');
+            mapsField.name = 'maps';
+            mapsField.value = maps;
+            form.appendChild(mapsField);
+            
+            const showButtonsField = document.createElement('input');
+            showButtonsField.name = 'show_buttons';
+            showButtonsField.value = showButtons ? '1' : '0';
+            form.appendChild(showButtonsField);
+            
+            // Add the form to the document and submit it
+            document.body.appendChild(form);
+            form.submit();
+        });
     </script>
 </body>
 </html>

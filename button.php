@@ -174,22 +174,55 @@ function generateStickyRightButtonsHtml($options) {
         return '<!-- Error: Phone or Zalo is required for sticky-right style -->';
     }
     
-    $html = '<div class="sticky-right-buttons">' . PHP_EOL;
+    $html = '<div class="group-left-sidebar">' . PHP_EOL;
+    $html .= '    <div class="sidebar-container">' . PHP_EOL;
     
-    // Phone button (always first)
+    // Phone button
     if (!empty($options['phone'])) {
-        $html .= '   <a class="button-item call-button" href="tel:' . htmlspecialchars($options['phone']) . '" rel="nofollow">' . PHP_EOL;
-        $html .= '      <div class="button-icon call-icon"></div>' . PHP_EOL;
-        $html .= '   </a>' . PHP_EOL;
+        $html .= '        <div class="sidebar-item sidebar-cskh-btn">' . PHP_EOL;
+        $html .= '            <a href="tel:' . htmlspecialchars($options['phone']) . '">' . PHP_EOL;
+        $html .= '                <div class="ring">' . PHP_EOL;
+        $html .= '                    <div class="coccoc-alo-phone coccoc-alo-green coccoc-alo-show">' . PHP_EOL;
+        $html .= '                        <div class="coccoc-alo-ph-circle-fill"></div>' . PHP_EOL;
+        $html .= '                        <div class="coccoc-alo-ph-img-circle">' . PHP_EOL;
+        $html .= '                            <img src="https://vuanem.com/image/icon/icons-phone-50.png" alt="Phone Icon" width="25px" height="25px">' . PHP_EOL;
+        $html .= '                        </div>' . PHP_EOL;
+        $html .= '                    </div>' . PHP_EOL;
+        $html .= '                </div>' . PHP_EOL;
+        $html .= '            </a>' . PHP_EOL;
+        $html .= '        </div>' . PHP_EOL;
     }
-    
-    // Zalo button (always second)
+
+    // Zalo button
     if (!empty($options['zalo'])) {
-        $html .= '   <a class="button-item zalo-button" href="' . htmlspecialchars($options['zalo']) . '" target="_blank" rel="nofollow noopener">' . PHP_EOL;
-        $html .= '      <div class="button-icon zalo-icon"></div>' . PHP_EOL;
-        $html .= '   </a>' . PHP_EOL;
+        $html .= '        <div class="sidebar-item" id="sidebar-zalo-btn">' . PHP_EOL;
+        $html .= '            <a href="' . htmlspecialchars($options['zalo']) . '" target="_blank">' . PHP_EOL;
+        $html .= '                <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' . PHP_EOL;
+        $html .= '                    <circle cx="22.5" cy="22.5" r="22.5" fill="#133EBF"></circle>' . PHP_EOL;
+        $html .= '                    <rect x="8" y="10" width="28" height="28" fill="url(#pattern0_11239_19047)"></rect>' . PHP_EOL;
+        $html .= '                    <defs>' . PHP_EOL;
+        $html .= '                        <pattern id="pattern0_11239_19047" patternContentUnits="objectBoundingBox" width="1" height="1">' . PHP_EOL;
+        $html .= '                            <use xlink:href="#image0_11239_19047" transform="scale(0.00166667)"></use>' . PHP_EOL;
+        $html .= '                        </pattern>' . PHP_EOL;
+        $html .= '                        <linearGradient id="paint0_linear_11239_19047" x1="22.5" y1="0" x2="22.5" y2="45" gradientUnits="userSpaceOnUse">' . PHP_EOL;
+        $html .= '                            <stop stop-color="#133EBF"></stop>' . PHP_EOL;
+        $html .= '                            <stop offset="1" stop-color="#133EBF"></stop>' . PHP_EOL;
+        $html .= '                        </linearGradient>' . PHP_EOL;
+        $html .= '                        <image id="image0_11239_19047" width="600" height="600" xlink:href="https://vuanem.com/images/zalo-logo.webp"></image>' . PHP_EOL;
+        $html .= '                    </defs>' . PHP_EOL;
+        $html .= '                </svg>' . PHP_EOL;
+        $html .= '            </a>' . PHP_EOL;
+        $html .= '        </div>' . PHP_EOL;
     }
     
+    // Scroll to top button (optional)
+    $html .= '        <div class="sidebar-item sidebar-cskh-btn" id="scrollTopBtn" style="display: none;">' . PHP_EOL;
+    $html .= '            <div class="chevron-up">' . PHP_EOL;
+    $html .= '                <img src="https://270349907.e.cdneverest.net/fast/filters:format(webp)/vuanem.com/image/chevron-up.png">' . PHP_EOL;
+    $html .= '            </div>' . PHP_EOL;
+    $html .= '        </div>' . PHP_EOL;
+    
+    $html .= '    </div>' . PHP_EOL;
     $html .= '</div>' . PHP_EOL;
     
     return $html;
