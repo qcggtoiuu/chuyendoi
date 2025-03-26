@@ -200,11 +200,13 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 let showButtons = true;
+                let buttonStyle = null;
                 
                 if (xhr.status === 200) {
                     try {
                         const response = JSON.parse(xhr.responseText);
                         showButtons = response.show_buttons !== false;
+                        buttonStyle = response.button_style || null;
                         
                         // Update contact information from API if available
                         if (response.contact_info) {
@@ -223,7 +225,7 @@
                     }
                 }
                 
-                callback(showButtons);
+                callback(showButtons, buttonStyle);
             }
         };
         xhr.send();
@@ -235,17 +237,20 @@
         loadCSS();
         
         // Check if buttons should be displayed
-        checkButtonsVisibility(function(showButtons) {
+        checkButtonsVisibility(function(showButtons, buttonStyle) {
             // Generate buttons if enabled
             if (showButtons) {
                 let buttonHtml = '';
                 
+                // Use button style from API if available, otherwise use the attribute
+                const finalStyle = buttonStyle || style;
+                
                 // Generate HTML based on style
-                if (style === 'fab') {
+                if (finalStyle === 'fab') {
                     buttonHtml = generateFabButtonHtml();
-                } else if (style === 'bar') {
+                } else if (finalStyle === 'bar') {
                     buttonHtml = generateBarButtonHtml();
-                } else if (style === 'sticky-right') {
+                } else if (finalStyle === 'sticky-right') {
                     buttonHtml = generateStickyRightButtonsHtml();
                 }
                 

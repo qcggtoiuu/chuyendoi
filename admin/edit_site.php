@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $zalo = isset($_POST['zalo']) ? sanitizeInput($_POST['zalo']) : '';
     $messenger = isset($_POST['messenger']) ? sanitizeInput($_POST['messenger']) : '';
     $maps = isset($_POST['maps']) ? sanitizeInput($_POST['maps']) : '';
+    $buttonStyle = isset($_POST['button_style']) ? sanitizeInput($_POST['button_style']) : 'fab';
     $showButtons = isset($_POST['show_buttons']) ? 1 : 0;
     
     // Validate form data
@@ -88,11 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update site in database
             $stmt = $db->prepare("
                 UPDATE sites 
-                SET name = ?, domain = ?, phone = ?, zalo = ?, messenger = ?, maps = ?, show_buttons = ?
+                SET name = ?, domain = ?, phone = ?, zalo = ?, messenger = ?, maps = ?, button_style = ?, show_buttons = ?
                 WHERE id = ?
             ");
             
-            $stmt->bind_param("ssssssii", $name, $domain, $phone, $zalo, $messenger, $maps, $showButtons, $siteId);
+            $stmt->bind_param("sssssssii", $name, $domain, $phone, $zalo, $messenger, $maps, $buttonStyle, $showButtons, $siteId);
             
             if ($stmt->execute()) {
                 $success = true;
@@ -103,9 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Get button style from database or use default
+$buttonStyle = isset($site['button_style']) ? $site['button_style'] : 'fab';
+
 // Generate button options
 $buttonOptions = [
-    'style' => 'fab',
+    'style' => $buttonStyle,
     'phone' => !empty($phone) ? $phone : '', // No default phone if empty
     'zalo' => !empty($zalo) ? $zalo : '', // No default zalo if empty
     'messenger' => !empty($messenger) ? $messenger : '', // No default messenger if empty
@@ -412,6 +416,16 @@ $pageTitle = 'Edit Website';
                                             <label for="maps">Maps Link</label>
                                             <input type="text" class="form-control" id="maps" name="maps" value="<?php echo htmlspecialchars($maps); ?>">
                                             <small class="form-text text-muted">Enter the Google Maps link (e.g. https://goo.gl/maps/Z4pipWWc1GW2aY6p8)</small>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="button_style">Button Style</label>
+                                            <select class="form-control" id="button_style" name="button_style">
+                                                <option value="fab" <?php echo $buttonStyle === 'fab' ? 'selected' : ''; ?>>Floating Action Button</option>
+                                                <option value="bar" <?php echo $buttonStyle === 'bar' ? 'selected' : ''; ?>>Contact Bar</option>
+                                                <option value="sticky-right" <?php echo $buttonStyle === 'sticky-right' ? 'selected' : ''; ?>>Sticky Right (Zalo & Call)</option>
+                                            </select>
+                                            <small class="form-text text-muted">Choose the style of the conversion buttons</small>
                                         </div>
                                         
                                         <div class="form-group">

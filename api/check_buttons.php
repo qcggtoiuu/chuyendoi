@@ -60,6 +60,7 @@ $site = $result->fetch_assoc();
 echo json_encode([
     'success' => true,
     'show_buttons' => (bool)$site['show_buttons'],
+    'button_style' => $site['button_style'] ?? 'fab',
     'contact_info' => [
         'phone' => $site['phone'],
         'zalo' => $site['zalo'],

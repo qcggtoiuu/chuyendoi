@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $zalo = isset($_POST['zalo']) ? sanitizeInput($_POST['zalo']) : '';
     $messenger = isset($_POST['messenger']) ? sanitizeInput($_POST['messenger']) : '';
     $maps = isset($_POST['maps']) ? sanitizeInput($_POST['maps']) : '';
+    $buttonStyle = isset($_POST['button_style']) ? sanitizeInput($_POST['button_style']) : 'fab';
     $showButtons = isset($_POST['show_buttons']) ? 1 : 0;
     
     // Validate form data
@@ -79,11 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Insert site into database
             $stmt = $db->prepare("
-                INSERT INTO sites (name, domain, api_key, phone, zalo, messenger, maps, show_buttons)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO sites (name, domain, api_key, phone, zalo, messenger, maps, button_style, show_buttons)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             
-            $stmt->bind_param("sssssssi", $name, $domain, $apiKey, $phone, $zalo, $messenger, $maps, $showButtons);
+            $stmt->bind_param("ssssssssi", $name, $domain, $apiKey, $phone, $zalo, $messenger, $maps, $buttonStyle, $showButtons);
             
             if ($stmt->execute()) {
                 $siteId = $db->getConnection()->insert_id;
@@ -115,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($showEmbedCode) {
     // Generate button options without default values if empty
     $buttonOptions = [
-        'style' => 'fab',
+        'style' => $buttonStyle,
         'phone' => !empty($newSitePhone) ? $newSitePhone : '',
         'zalo' => !empty($newSiteZalo) ? $newSiteZalo : '',
         'messenger' => !empty($newSiteMessenger) ? $newSiteMessenger : '',
@@ -656,6 +657,16 @@ export default ChuyenDoiTracker;
                                             <label for="maps">Maps Link</label>
                                             <input type="text" class="form-control" id="maps" name="maps" value="<?php echo htmlspecialchars($maps); ?>">
                                             <small class="form-text text-muted">Enter the Google Maps link (e.g. https://goo.gl/maps/Z4pipWWc1GW2aY6p8)</small>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="button_style">Button Style</label>
+                                            <select class="form-control" id="button_style" name="button_style">
+                                                <option value="fab" selected>Floating Action Button</option>
+                                                <option value="bar">Contact Bar</option>
+                                                <option value="sticky-right">Sticky Right (Zalo & Call)</option>
+                                            </select>
+                                            <small class="form-text text-muted">Choose the style of the conversion buttons</small>
                                         </div>
                                         
                                         <div class="form-group">
