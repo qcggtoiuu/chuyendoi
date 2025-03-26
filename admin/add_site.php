@@ -143,18 +143,24 @@ if ($showEmbedCode) {
     $messengerValue = !empty($newSiteMessenger) ? $newSiteMessenger : '';
     $mapsValue = !empty($newSiteMaps) ? $newSiteMaps : '';
     
-    // Generate simple embed code
-    $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '" data-phone="' . $phoneValue . '" data-zalo="' . $zaloValue . '" data-messenger="' . $messengerValue . '" data-maps="' . $mapsValue . '"></script>';
+    // Generate simple embed code - no need to include contact info as it will be fetched from API
+    $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '"></script>';
     
     // Generate PHP code snippet
     $phpSnippet = "<?php\n";
     $phpSnippet .= "// Add this code at the end of your page, before the closing </body> tag\n";
     $phpSnippet .= "?>\n";
-    $phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="<?php echo \'' . $newSiteApiKey . '\'; ?>" data-phone="<?php echo $phone; ?>" data-zalo="<?php echo $zalo; ?>" data-messenger="<?php echo $messenger; ?>" data-maps="<?php echo $maps; ?>"></script>';
+    $phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="<?php echo \'' . $newSiteApiKey . '\'; ?>"></script>';
     
     // Generate JavaScript code snippet
     $jsSnippet = "// Add this code at the end of your page, before the closing </body> tag\n";
-    $jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '" data-phone="' . $phoneValue . '" data-zalo="' . $zaloValue . '" data-messenger="' . $messengerValue . '" data-maps="' . $mapsValue . '"></script>';
+    $jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '"></script>';
+    
+    // Note about the updated embed code
+    $embedNote = '<div class="alert alert-info mt-3">
+        <i class="fas fa-info-circle"></i> <strong>New Feature:</strong> Contact information is now automatically fetched from your site settings. 
+        When you update your contact details here, the buttons on your website will update automatically without changing the embed code.
+    </div>';
 }
 
 // Page title
@@ -381,6 +387,9 @@ $pageTitle = 'Add Website';
                                         <li class="nav-item">
                                             <a class="nav-link" id="js-tab" data-toggle="tab" href="#js" role="tab" aria-controls="js" aria-selected="false">React/Next.js</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="vite-tab" data-toggle="tab" href="#vite" role="tab" aria-controls="vite" aria-selected="false">Vite + React + TS</a>
+                                        </li>
                                     </ul>
                                     <div class="tab-content" id="codeTabsContent">
                                         <div class="tab-pane fade show active" id="html" role="tabpanel" aria-labelledby="html-tab">
@@ -415,7 +424,160 @@ $pageTitle = 'Add Website';
                                                 <a href="../integration/nextjs-component.js" target="_blank">ChuyenDoiTracker.js</a>
                                             </p>
                                         </div>
+                                        <div class="tab-pane fade" id="vite" role="tabpanel" aria-labelledby="vite-tab">
+                                            <div class="code-container">
+                                                <pre><code>// In your Vite + React + TypeScript project
+// src/components/ChuyenDoiTracker.tsx
+
+import { useEffect, useState, FC } from 'react';
+
+interface ChuyenDoiTrackerProps {
+  apiKey: string;
+  style?: 'fab' | 'bar';
+  phone?: string;
+  zalo?: string;
+  messenger?: string;
+  maps?: string;
+  showLabels?: boolean;
+  primaryColor?: string;
+  animation?: boolean;
+  debug?: boolean;
+}
+
+interface Tracker {
+  init: (options: {
+    apiKey: string;
+    apiUrl: string;
+    buttonSelector: string;
+    debug: boolean;
+  }) => void;
+  shouldHideButtons: () => boolean;
+  trackClick: (element: HTMLElement) => void;
+  trackEvent: (eventName: string, eventData: any) => void;
+  isBot: () => boolean;
+}
+
+declare global {
+  interface Window {
+    Tracker?: Tracker;
+  }
+}
+
+const ChuyenDoiTracker: FC<ChuyenDoiTrackerProps> = ({
+  apiKey,
+  style,
+  phone,
+  zalo,
+  messenger,
+  maps,
+  showLabels,
+  primaryColor,
+  animation,
+  debug
+}) => {
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [hideButtons, setHideButtons] = useState<boolean>(false);
+  const [embedCode, setEmbedCode] = useState<string>('');
+  
+  useEffect(() => {
+    // Load tracking script
+    const script = document.createElement('script');
+    script.src = 'https://chuyendoi.io.vn/assets/js/tracker.js';
+    script.async = true;
+    script.onload = function() {
+      setIsLoaded(true);
+      
+      // Initialize tracker
+      if (typeof window.Tracker !== 'undefined') {
+        window.Tracker.init({
+          apiKey: apiKey,
+          apiUrl: 'https://chuyendoi.io.vn/api/track.php',
+          buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar',
+          debug: debug || false
+        });
+        
+        // Check if buttons should be hidden
+        setHideButtons(window.Tracker.shouldHideButtons());
+      }
+    };
+    document.head.appendChild(script);
+    
+    // Load CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://chuyendoi.io.vn/assets/css/buttons.css';
+    document.head.appendChild(link);
+    
+    // Fetch embed code
+    fetch(`https://chuyendoi.io.vn/button_preview.php?api_key=${apiKey}&style=${style || 'fab'}&phone=${encodeURIComponent(phone || '')}&zalo=${encodeURIComponent(zalo || '')}&messenger=${encodeURIComponent(messenger || '')}&maps=${encodeURIComponent(maps || '')}&show_labels=${showLabels ? '1' : '0'}&primary_color=${encodeURIComponent(primaryColor || '#3961AA')}&animation=${animation ? '1' : '0'}`)
+      .then(response => response.text())
+      .then(html => {
+        // Extract the button HTML from the response
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const previewContainer = doc.querySelector('.preview-container');
+        
+        if (previewContainer) {
+          setEmbedCode(previewContainer.innerHTML);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching embed code:', error);
+      });
+    
+    return () => {
+      // Cleanup
+      document.head.removeChild(script);
+      document.head.removeChild(link);
+    };
+  }, [apiKey, style, phone, zalo, messenger, maps, showLabels, primaryColor, animation, debug]);
+  
+  // Don't render anything if buttons should be hidden
+  if (hideButtons) {
+    return null;
+  }
+  
+  // Don't render anything if not loaded yet
+  if (!isLoaded || !embedCode) {
+    return null;
+  }
+  
+  return (
+    <div dangerouslySetInnerHTML={{ __html: embedCode }} />
+  );
+};
+
+export default ChuyenDoiTracker;
+
+// Usage in your app:
+// import ChuyenDoiTracker from './components/ChuyenDoiTracker';
+//
+// function App() {
+//   return (
+//     <div className="App">
+//       <ChuyenDoiTracker
+//         apiKey="<?php echo $newSiteApiKey; ?>"
+//         phone="<?php echo $phoneValue; ?>"
+//         zalo="<?php echo $zaloValue; ?>"
+//         messenger="<?php echo $messengerValue; ?>"
+//         maps="<?php echo $mapsValue; ?>"
+//       />
+//     </div>
+//   );
+// }
+</code></pre>
+                                                <button class="btn btn-sm btn-primary mt-2 copy-code-btn" data-target="vite">
+                                                    <i class="fas fa-copy"></i> Copy Code
+                                                </button>
+                                            </div>
+                                            <p class="mt-2 small">
+                                                <i class="fas fa-info-circle"></i> Make sure to include the Vite + React + TypeScript component:
+                                                <a href="../integration/vite-react-typescript-component.tsx" target="_blank">ChuyenDoiTracker.tsx</a>
+                                            </p>
+                                        </div>
                                     </div>
+                                    
+                                    <?php echo $embedNote; ?>
                                     
                                     <div class="alert alert-info mt-3">
                                         <i class="fas fa-info-circle"></i> Add the code at the end of your page, before the closing <code>&lt;/body&gt;</code> tag.

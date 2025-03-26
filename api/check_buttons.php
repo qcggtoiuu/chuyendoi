@@ -56,8 +56,14 @@ if ($result->num_rows === 0) {
 // Get site information
 $site = $result->fetch_assoc();
 
-// Return show_buttons value
+// Return site information
 echo json_encode([
     'success' => true,
-    'show_buttons' => (bool)$site['show_buttons']
+    'show_buttons' => (bool)$site['show_buttons'],
+    'contact_info' => [
+        'phone' => $site['phone'],
+        'zalo' => $site['zalo'],
+        'messenger' => $site['messenger'],
+        'maps' => $site['maps']
+    ]
 ]);

@@ -9,17 +9,23 @@
     const apiUrl = scriptTag.getAttribute('data-api-url') || 'https://chuyendoi.io.vn/api/track.php';
     const debug = scriptTag.getAttribute('data-debug') === 'true';
     
-    // Contact information
-    const phone = scriptTag.getAttribute('data-phone') || '';
-    const zalo = scriptTag.getAttribute('data-zalo') || '';
-    const messenger = scriptTag.getAttribute('data-messenger') || '';
-    const maps = scriptTag.getAttribute('data-maps') || '';
+    // Contact information from attributes (for backward compatibility)
+    const attrPhone = scriptTag.getAttribute('data-phone') || '';
+    const attrZalo = scriptTag.getAttribute('data-zalo') || '';
+    const attrMessenger = scriptTag.getAttribute('data-messenger') || '';
+    const attrMaps = scriptTag.getAttribute('data-maps') || '';
     
     // Button options
     const style = scriptTag.getAttribute('data-style') || 'fab';
     const showLabels = scriptTag.getAttribute('data-show-labels') !== 'false';
     const primaryColor = scriptTag.getAttribute('data-primary-color') || '#3961AA';
     const animation = scriptTag.getAttribute('data-animation') !== 'false';
+    
+    // Contact information (will be updated from API)
+    let phone = attrPhone;
+    let zalo = attrZalo;
+    let messenger = attrMessenger;
+    let maps = attrMaps;
     
     // Load CSS
     const loadCSS = function() {
@@ -158,9 +164,9 @@
         return html;
     };
     
-    // Check if buttons should be displayed
+    // Check if buttons should be displayed and get contact information
     const checkButtonsVisibility = function(callback) {
-        // Make API request to check if buttons should be displayed
+        // Make API request to check if buttons should be displayed and get contact information
         const xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://chuyendoi.io.vn/api/check_buttons.php?api_key=' + apiKey, true);
         xhr.onreadystatechange = function() {
@@ -171,6 +177,19 @@
                     try {
                         const response = JSON.parse(xhr.responseText);
                         showButtons = response.show_buttons !== false;
+                        
+                        // Update contact information from API if available
+                        if (response.contact_info) {
+                            // Use API values if they exist, otherwise keep the attribute values
+                            phone = response.contact_info.phone || attrPhone;
+                            zalo = response.contact_info.zalo || attrZalo;
+                            messenger = response.contact_info.messenger || attrMessenger;
+                            maps = response.contact_info.maps || attrMaps;
+                            
+                            if (debug) {
+                                console.log('Contact info from API:', response.contact_info);
+                            }
+                        }
                     } catch (e) {
                         console.error('Error parsing response:', e);
                     }
