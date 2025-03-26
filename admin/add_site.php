@@ -361,7 +361,14 @@ $pageTitle = 'Add Website';
                                     <p>Use the code below to integrate the tracking system into your website.</p>
                                     
                                     <div class="preview-container">
-                                        <?php echo $trackingCode; ?>
+                                        <div style="padding: 20px;">
+                                            <p><strong>Preview of Conversion Buttons:</strong></p>
+                                            <p>The buttons will appear on your website as shown below:</p>
+                                            <?php 
+                                            // Generate button HTML only for preview
+                                            echo generateButtonHtml($buttonOptions); 
+                                            ?>
+                                        </div>
                                     </div>
                                     
                                     <ul class="nav nav-tabs" id="codeTabs" role="tablist">
