@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $zalo = isset($_POST['zalo']) ? sanitizeInput($_POST['zalo']) : '';
     $messenger = isset($_POST['messenger']) ? sanitizeInput($_POST['messenger']) : '';
     $maps = isset($_POST['maps']) ? sanitizeInput($_POST['maps']) : '';
+    $showButtons = isset($_POST['show_buttons']) ? 1 : 0;
     
     // Validate form data
     if (empty($name)) {
@@ -78,11 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Insert site into database
             $stmt = $db->prepare("
-                INSERT INTO sites (name, domain, api_key, phone, zalo, messenger, maps)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO sites (name, domain, api_key, phone, zalo, messenger, maps, show_buttons)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ");
             
-            $stmt->bind_param("sssssss", $name, $domain, $apiKey, $phone, $zalo, $messenger, $maps);
+            $stmt->bind_param("sssssssi", $name, $domain, $apiKey, $phone, $zalo, $messenger, $maps, $showButtons);
             
             if ($stmt->execute()) {
                 $siteId = $db->getConnection()->insert_id;
@@ -495,6 +496,14 @@ $pageTitle = 'Add Website';
                                             <label for="maps">Maps Link</label>
                                             <input type="text" class="form-control" id="maps" name="maps" value="<?php echo htmlspecialchars($maps); ?>">
                                             <small class="form-text text-muted">Enter the Google Maps link (e.g. https://goo.gl/maps/Z4pipWWc1GW2aY6p8)</small>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="show_buttons" name="show_buttons" value="1" checked>
+                                                <label class="custom-control-label" for="show_buttons">Show conversion buttons</label>
+                                                <small class="form-text text-muted">Enable or disable the display of conversion buttons on the website</small>
+                                            </div>
                                         </div>
                                         
                                         <div class="form-group">

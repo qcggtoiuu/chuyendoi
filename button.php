@@ -179,7 +179,7 @@ function generateTrackingScript($apiKey, $options = []) {
     $html .= '(function() {' . PHP_EOL;
     $html .= '    // Load tracking script' . PHP_EOL;
     $html .= '    var script = document.createElement("script");' . PHP_EOL;
-    $html .= '    script.src = "' . htmlspecialchars($options['apiUrl']) . '/../assets/js/tracker.js";' . PHP_EOL;
+    $html .= '    script.src = "' . htmlspecialchars(API_URL) . '/assets/js/tracker.js";' . PHP_EOL;
     $html .= '    script.async = true;' . PHP_EOL;
     $html .= '    script.onload = function() {' . PHP_EOL;
     $html .= '        // Initialize tracker' . PHP_EOL;
@@ -195,7 +195,7 @@ function generateTrackingScript($apiKey, $options = []) {
     $html .= '    // Load CSS' . PHP_EOL;
     $html .= '    var link = document.createElement("link");' . PHP_EOL;
     $html .= '    link.rel = "stylesheet";' . PHP_EOL;
-    $html .= '    link.href = "' . htmlspecialchars($options['apiUrl']) . '/../assets/css/buttons.css";' . PHP_EOL;
+    $html .= '    link.href = "' . htmlspecialchars(API_URL) . '/assets/css/buttons.css";' . PHP_EOL;
     $html .= '    document.head.appendChild(link);' . PHP_EOL;
     $html .= '})();' . PHP_EOL;
     $html .= '</script>' . PHP_EOL;
@@ -213,7 +213,29 @@ function generateTrackingScript($apiKey, $options = []) {
  */
 function generateTrackingCode($apiKey, $buttonOptions = [], $scriptOptions = []) {
     $html = '<!-- IP Tracking and Bot Detection System -->' . PHP_EOL;
-    $html .= generateButtonHtml($buttonOptions) . PHP_EOL;
+    
+    // Check if we should show the buttons
+    $showButtons = true;
+    
+    // Get site information from database
+    if (defined('TRACKING_SYSTEM')) {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT show_buttons FROM sites WHERE api_key = ?");
+        $stmt->bind_param("s", $apiKey);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $site = $result->fetch_assoc();
+            $showButtons = (bool)$site['show_buttons'];
+        }
+    }
+    
+    // Only generate button HTML if show_buttons is true
+    if ($showButtons) {
+        $html .= generateButtonHtml($buttonOptions) . PHP_EOL;
+    }
+    
     $html .= generateTrackingScript($apiKey, $scriptOptions) . PHP_EOL;
     
     return $html;
