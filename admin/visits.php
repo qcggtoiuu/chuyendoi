@@ -332,8 +332,8 @@ $pageTitle = 'Quản Lý Lượt Truy Cập';
                             </div>
                             
                             <?php if (count($visits) > 0): ?>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
+                            <div class="table-responsive" style="overflow-x: auto;">
+                                <table class="table table-hover" style="min-width: 1500px;">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -365,9 +365,17 @@ $pageTitle = 'Quản Lý Lượt Truy Cập';
                                             <td><?php echo $visit['screen_width'] . 'x' . $visit['screen_height']; ?></td>
                                             <td><?php echo htmlspecialchars($visit['city'] . ', ' . $visit['country']); ?></td>
                                             <td>
-                                                <span class="d-inline-block text-truncate" style="max-width: 150px;" title="<?php echo htmlspecialchars($visit['current_page']); ?>">
-                                                    <?php echo htmlspecialchars($visit['current_page']); ?>
-                                                </span>
+                                                <?php 
+                                                $url = parse_url($visit['current_page']);
+                                                $path = isset($url['path']) ? $url['path'] : '';
+                                                $query = isset($url['query']) ? '?' . $url['query'] : '';
+                                                $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
+                                                $urlPath = $path . $query . $fragment;
+                                                $displayUrl = mb_strlen($urlPath) > 100 ? mb_substr($urlPath, 0, 97) . '...' : $urlPath;
+                                                ?>
+                                                <a href="<?php echo htmlspecialchars($visit['current_page']); ?>" target="_blank" title="<?php echo htmlspecialchars($visit['current_page']); ?>">
+                                                    <?php echo htmlspecialchars($displayUrl); ?>
+                                                </a>
                                             </td>
                                             <td><?php echo formatTime($visit['time_spent']); ?></td>
                                             <td>

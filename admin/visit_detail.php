@@ -363,6 +363,19 @@ $pageTitle = 'Chi Tiết Lượt Truy Cập #' . $visitId;
                                         </div>
                                     </div>
                                     <div class="row mb-3">
+                                        <div class="col-md-4 info-label">Nguồn truy cập:</div>
+                                        <div class="col-md-8">
+                                            <?php if (!empty($visit['referrer'])): ?>
+                                            <a href="<?php echo htmlspecialchars($visit['referrer']); ?>" target="_blank">
+                                                <?php echo htmlspecialchars($visit['referrer']); ?>
+                                                <i class="fas fa-external-link-alt ml-1"></i>
+                                            </a>
+                                            <?php else: ?>
+                                            <span class="text-muted">Truy cập trực tiếp hoặc không xác định</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
                                         <div class="col-md-4 info-label">Loại:</div>
                                         <div class="col-md-8">
                                             <?php if ($visit['is_bot']): ?>
@@ -374,6 +387,51 @@ $pageTitle = 'Chi Tiết Lượt Truy Cập #' . $visitId;
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- UTM Parameters -->
+                            <?php if (!empty($visit['utm_source']) || !empty($visit['utm_medium']) || !empty($visit['utm_campaign']) || !empty($visit['utm_term']) || !empty($visit['utm_content'])): ?>
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Thông Tin UTM</h5>
+                                </div>
+                                <div class="card-body">
+                                    <?php if (!empty($visit['utm_source'])): ?>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 info-label">Nguồn (Source):</div>
+                                        <div class="col-md-8"><?php echo htmlspecialchars($visit['utm_source']); ?></div>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($visit['utm_medium'])): ?>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 info-label">Kênh (Medium):</div>
+                                        <div class="col-md-8"><?php echo htmlspecialchars($visit['utm_medium']); ?></div>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($visit['utm_campaign'])): ?>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 info-label">Chiến dịch (Campaign):</div>
+                                        <div class="col-md-8"><?php echo htmlspecialchars($visit['utm_campaign']); ?></div>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($visit['utm_term'])): ?>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 info-label">Từ khóa (Term):</div>
+                                        <div class="col-md-8"><?php echo htmlspecialchars($visit['utm_term']); ?></div>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($visit['utm_content'])): ?>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 info-label">Nội dung (Content):</div>
+                                        <div class="col-md-8"><?php echo htmlspecialchars($visit['utm_content']); ?></div>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                             
                             <!-- Device Information -->
                             <div class="card mb-4">

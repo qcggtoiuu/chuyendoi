@@ -76,8 +76,17 @@
             screen_height: window.screen.height,
             js_enabled: true,
             connection_type: getConnectionType(),
-            user_agent: navigator.userAgent
+            user_agent: navigator.userAgent,
+            referrer: document.referrer || ''
         };
+        
+        // Get UTM parameters from URL
+        var urlParams = new URLSearchParams(window.location.search);
+        data.utm_source = urlParams.get('utm_source') || null;
+        data.utm_medium = urlParams.get('utm_medium') || null;
+        data.utm_campaign = urlParams.get('utm_campaign') || null;
+        data.utm_term = urlParams.get('utm_term') || null;
+        data.utm_content = urlParams.get('utm_content') || null;
         
         // Get IP address using ipify.org
         fetch('https://api.ipify.org?format=json')

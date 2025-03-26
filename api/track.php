@@ -117,6 +117,14 @@ function handlePageView($data, $site) {
     // Get current page
     $currentPage = isset($data['current_page']) ? $data['current_page'] : '';
     
+    // Get referrer and UTM parameters
+    $referrer = isset($data['referrer']) ? $data['referrer'] : '';
+    $utmSource = isset($data['utm_source']) ? $data['utm_source'] : null;
+    $utmMedium = isset($data['utm_medium']) ? $data['utm_medium'] : null;
+    $utmCampaign = isset($data['utm_campaign']) ? $data['utm_campaign'] : null;
+    $utmTerm = isset($data['utm_term']) ? $data['utm_term'] : null;
+    $utmContent = isset($data['utm_content']) ? $data['utm_content'] : null;
+    
     // Get location info
     $locationInfo = getLocationInfo($ipAddress);
     $city = $locationInfo['city'];
@@ -171,15 +179,17 @@ function handlePageView($data, $site) {
         INSERT INTO visits (
             site_id, ip_address, browser, browser_version, isp, connection_type, 
             os, os_version, screen_width, screen_height, city, country, 
-            current_page, bot_score, is_bot
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            current_page, referrer, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
+            bot_score, is_bot
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     
     $stmt->bind_param(
-        "isssssssiisssdi",
+        "isssssssiissssssssdi",
         $site['id'], $ipAddress, $browser, $browserVersion, $isp, $connectionType,
         $os, $osVersion, $screenWidth, $screenHeight, $city, $country,
-        $currentPage, $botScore, $isBot
+        $currentPage, $referrer, $utmSource, $utmMedium, $utmCampaign, $utmTerm, $utmContent,
+        $botScore, $isBot
     );
     
     $stmt->execute();
