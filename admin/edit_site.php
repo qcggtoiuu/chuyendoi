@@ -105,10 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Generate button options
 $buttonOptions = [
     'style' => 'fab',
-    'phone' => $phone,
-    'zalo' => $zalo,
-    'messenger' => $messenger,
-    'maps' => $maps,
+    'phone' => !empty($phone) ? $phone : '0916152929', // Default phone if empty
+    'zalo' => !empty($zalo) ? $zalo : 'https://zalo.me/0916152929', // Default zalo if empty
+    'messenger' => !empty($messenger) ? $messenger : 'https://m.me/dienmaytotvietnam', // Default messenger if empty
+    'maps' => !empty($maps) ? $maps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8', // Default maps if empty
     'show_labels' => true,
     'primary_color' => '#3961AA',
     'animation' => true
@@ -126,14 +126,20 @@ $trackingCode = generateTrackingCode($apiKey, $buttonOptions, $scriptOptions);
 // Get embed code
 $embedCode = htmlspecialchars($trackingCode);
 
+// Get default or provided values for code snippets
+$phoneValue = !empty($phone) ? $phone : '0916152929';
+$zaloValue = !empty($zalo) ? $zalo : 'https://zalo.me/0916152929';
+$messengerValue = !empty($messenger) ? $messenger : 'https://m.me/dienmaytotvietnam';
+$mapsValue = !empty($maps) ? $maps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
+
 // Generate PHP code snippet
 $phpSnippet = "<?php\n";
 $phpSnippet .= "// Add this code at the end of your page, before the closing </body> tag\n";
 $phpSnippet .= "echo chuyendoi_tracking('{$apiKey}', [\n";
-$phpSnippet .= "    'phone' => '{$phone}',\n";
-$phpSnippet .= "    'zalo' => '{$zalo}',\n";
-$phpSnippet .= "    'messenger' => '{$messenger}',\n";
-$phpSnippet .= "    'maps' => '{$maps}'\n";
+$phpSnippet .= "    'phone' => '{$phoneValue}',\n";
+$phpSnippet .= "    'zalo' => '{$zaloValue}',\n";
+$phpSnippet .= "    'messenger' => '{$messengerValue}',\n";
+$phpSnippet .= "    'maps' => '{$mapsValue}'\n";
 $phpSnippet .= "]);\n";
 $phpSnippet .= "?>";
 
@@ -142,10 +148,10 @@ $jsSnippet = "import ChuyenDoiTracker from '../components/ChuyenDoiTracker';\n\n
 $jsSnippet .= "// Add this component at the end of your page layout\n";
 $jsSnippet .= "<ChuyenDoiTracker\n";
 $jsSnippet .= "  apiKey=\"{$apiKey}\"\n";
-$jsSnippet .= "  phone=\"{$phone}\"\n";
-$jsSnippet .= "  zalo=\"{$zalo}\"\n";
-$jsSnippet .= "  messenger=\"{$messenger}\"\n";
-$jsSnippet .= "  maps=\"{$maps}\"\n";
+$jsSnippet .= "  phone=\"{$phoneValue}\"\n";
+$jsSnippet .= "  zalo=\"{$zaloValue}\"\n";
+$jsSnippet .= "  messenger=\"{$messengerValue}\"\n";
+$jsSnippet .= "  maps=\"{$mapsValue}\"\n";
 $jsSnippet .= "/>";
 
 // Page title

@@ -6,6 +6,7 @@ define('TRACKING_SYSTEM', true);
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../button.php';
 
 // Start session
 session_start();
@@ -35,6 +36,17 @@ $messenger = '';
 $maps = '';
 $success = false;
 $error = '';
+
+// Initialize variables for embedding code
+$newSiteApiKey = '';
+$newSitePhone = '';
+$newSiteZalo = '';
+$newSiteMessenger = '';
+$newSiteMaps = '';
+$showEmbedCode = false;
+$embedCode = '';
+$phpSnippet = '';
+$jsSnippet = '';
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -76,7 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $siteId = $db->getConnection()->insert_id;
                 $success = true;
                 
-                // Reset form
+                // Save the API key and contact info for embedding code
+                $newSiteApiKey = $apiKey;
+                $newSitePhone = $phone;
+                $newSiteZalo = $zalo;
+                $newSiteMessenger = $messenger;
+                $newSiteMaps = $maps;
+                $showEmbedCode = true;
+                
+                // Reset form for next submission
                 $name = '';
                 $domain = '';
                 $phone = '';
@@ -90,6 +110,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Generate embedding code if a site was just added
+if ($showEmbedCode) {
+    // Generate button options with default values if empty
+    $buttonOptions = [
+        'style' => 'fab',
+        'phone' => !empty($newSitePhone) ? $newSitePhone : '0916152929',
+        'zalo' => !empty($newSiteZalo) ? $newSiteZalo : 'https://zalo.me/0916152929',
+        'messenger' => !empty($newSiteMessenger) ? $newSiteMessenger : 'https://m.me/dienmaytotvietnam',
+        'maps' => !empty($newSiteMaps) ? $newSiteMaps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8',
+        'show_labels' => true,
+        'primary_color' => '#3961AA',
+        'animation' => true
+    ];
+    
+    // Generate script options
+    $scriptOptions = [
+        'debug' => false,
+        'apiUrl' => API_URL . '/track.php'
+    ];
+    
+    // Generate tracking code
+    $trackingCode = generateTrackingCode($newSiteApiKey, $buttonOptions, $scriptOptions);
+    
+    // Get embed code
+    $embedCode = htmlspecialchars($trackingCode);
+    
+    // Get default or provided values for code snippets
+    $phoneValue = !empty($newSitePhone) ? $newSitePhone : '0916152929';
+    $zaloValue = !empty($newSiteZalo) ? $newSiteZalo : 'https://zalo.me/0916152929';
+    $messengerValue = !empty($newSiteMessenger) ? $newSiteMessenger : 'https://m.me/dienmaytotvietnam';
+    $mapsValue = !empty($newSiteMaps) ? $newSiteMaps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
+    
+    // Generate PHP code snippet
+    $phpSnippet = "<?php\n";
+    $phpSnippet .= "// Add this code at the end of your page, before the closing </body> tag\n";
+    $phpSnippet .= "echo chuyendoi_tracking('{$newSiteApiKey}', [\n";
+    $phpSnippet .= "    'phone' => '{$phoneValue}',\n";
+    $phpSnippet .= "    'zalo' => '{$zaloValue}',\n";
+    $phpSnippet .= "    'messenger' => '{$messengerValue}',\n";
+    $phpSnippet .= "    'maps' => '{$mapsValue}'\n";
+    $phpSnippet .= "]);\n";
+    $phpSnippet .= "?>";
+    
+    // Generate JavaScript code snippet
+    $jsSnippet = "import ChuyenDoiTracker from '../components/ChuyenDoiTracker';\n\n";
+    $jsSnippet .= "// Add this component at the end of your page layout\n";
+    $jsSnippet .= "<ChuyenDoiTracker\n";
+    $jsSnippet .= "  apiKey=\"{$newSiteApiKey}\"\n";
+    $jsSnippet .= "  phone=\"{$phoneValue}\"\n";
+    $jsSnippet .= "  zalo=\"{$zaloValue}\"\n";
+    $jsSnippet .= "  messenger=\"{$messengerValue}\"\n";
+    $jsSnippet .= "  maps=\"{$mapsValue}\"\n";
+    $jsSnippet .= "/>";
+}
+
 // Page title
 $pageTitle = 'Add Website';
 ?>
@@ -101,6 +176,7 @@ $pageTitle = 'Add Website';
     <title><?php echo $pageTitle; ?> - Hệ Thống Tracking IP</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/buttons.css">
     <style>
         .sidebar {
             min-height: 100vh;
@@ -147,6 +223,45 @@ $pageTitle = 'Add Website';
         .btn-primary:hover {
             background-color: #2c4e8a;
             border-color: #2c4e8a;
+        }
+        .preview-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .code-container pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .nav-tabs .nav-link {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #f5f5f5;
+            border-color: #ddd #ddd #f5f5f5;
+        }
+        .tab-content {
+            border: 1px solid #ddd;
+            border-top: none;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            background-color: #f5f5f5;
+            padding: 15px;
         }
     </style>
 </head>
@@ -236,7 +351,87 @@ $pageTitle = 'Add Website';
                 <div class="container-fluid">
                     <h1 class="h2 mb-4"><?php echo $pageTitle; ?></h1>
                     
-                    <?php if ($success): ?>
+                    <?php if ($success && $showEmbedCode): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> Website has been added successfully. The embedding code is available below.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Integration Code</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Use the code below to integrate the tracking system into your website.</p>
+                                    
+                                    <div class="preview-container">
+                                        <?php echo $trackingCode; ?>
+                                    </div>
+                                    
+                                    <ul class="nav nav-tabs" id="codeTabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="html-tab" data-toggle="tab" href="#html" role="tab" aria-controls="html" aria-selected="true">HTML</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="php-tab" data-toggle="tab" href="#php" role="tab" aria-controls="php" aria-selected="false">PHP</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="js-tab" data-toggle="tab" href="#js" role="tab" aria-controls="js" aria-selected="false">React/Next.js</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="codeTabsContent">
+                                        <div class="tab-pane fade show active" id="html" role="tabpanel" aria-labelledby="html-tab">
+                                            <div class="code-container">
+                                                <pre><code><?php echo $embedCode; ?></code></pre>
+                                                <button class="btn btn-sm btn-primary mt-2 copy-code-btn" data-target="html">
+                                                    <i class="fas fa-copy"></i> Copy Code
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="php" role="tabpanel" aria-labelledby="php-tab">
+                                            <div class="code-container">
+                                                <pre><code><?php echo htmlspecialchars($phpSnippet); ?></code></pre>
+                                                <button class="btn btn-sm btn-primary mt-2 copy-code-btn" data-target="php">
+                                                    <i class="fas fa-copy"></i> Copy Code
+                                                </button>
+                                            </div>
+                                            <p class="mt-2 small">
+                                                <i class="fas fa-info-circle"></i> Make sure to include the PHP integration file:
+                                                <a href="../integration/php-snippet.php" target="_blank">php-snippet.php</a>
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="js" role="tabpanel" aria-labelledby="js-tab">
+                                            <div class="code-container">
+                                                <pre><code><?php echo htmlspecialchars($jsSnippet); ?></code></pre>
+                                                <button class="btn btn-sm btn-primary mt-2 copy-code-btn" data-target="js">
+                                                    <i class="fas fa-copy"></i> Copy Code
+                                                </button>
+                                            </div>
+                                            <p class="mt-2 small">
+                                                <i class="fas fa-info-circle"></i> Make sure to include the React component:
+                                                <a href="../integration/nextjs-component.js" target="_blank">ChuyenDoiTracker.js</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-info-circle"></i> Add the code at the end of your page, before the closing <code>&lt;/body&gt;</code> tag.
+                                    </div>
+                                    
+                                    <p>
+                                        <a href="../button_preview.php?api_key=<?php echo urlencode($newSiteApiKey); ?>" target="_blank" class="btn btn-outline-primary btn-block">
+                                            <i class="fas fa-eye"></i> Customize Button Appearance
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php elseif ($success): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>Success!</strong> Website has been added successfully.
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -344,5 +539,35 @@ $pageTitle = 'Add Website';
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+    <script>
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Copy code from tabs
+        document.querySelectorAll('.copy-code-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                const codeElement = document.querySelector(`#${target} pre code`);
+                const textArea = document.createElement('textarea');
+                textArea.value = codeElement.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Show tooltip
+                this.setAttribute('data-original-title', 'Copied!');
+                $(this).tooltip({
+                    trigger: 'manual',
+                    placement: 'top'
+                }).tooltip('show');
+                
+                setTimeout(() => {
+                    $(this).tooltip('hide');
+                }, 1000);
+            });
+        });
+    </script>
 </body>
 </html>
