@@ -464,7 +464,7 @@ $pageTitle = 'Edit Website';
                                     <div class="tab-content" id="codeTabsContent">
                                         <div class="tab-pane fade show active" id="html" role="tabpanel" aria-labelledby="html-tab">
                                             <div class="code-container">
-                                                <pre><code><?php echo $embedCode; ?></code></pre>
+                                                <pre><code><?php echo htmlspecialchars($embedCode); ?></code></pre>
                                                 <button class="btn btn-sm btn-primary mt-2 copy-code-btn" data-target="html">
                                                     <i class="fas fa-copy"></i> Copy Code
                                                 </button>
