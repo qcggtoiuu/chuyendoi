@@ -37,7 +37,11 @@ $offset = ($page - 1) * $perPage;
 
 // Build query
 $query = "
-    SELECT v.*, s.name as site_name
+    SELECT v.*, s.name as site_name,
+    (SELECT COUNT(*) FROM clicks WHERE visit_id = v.id AND click_type = 'phone') as phone_clicks,
+    (SELECT COUNT(*) FROM clicks WHERE visit_id = v.id AND click_type = 'zalo') as zalo_clicks,
+    (SELECT COUNT(*) FROM clicks WHERE visit_id = v.id AND click_type = 'messenger') as messenger_clicks,
+    (SELECT COUNT(*) FROM clicks WHERE visit_id = v.id AND click_type = 'maps') as maps_clicks
     FROM visits v
     JOIN sites s ON v.site_id = s.id
     WHERE 1=1
@@ -336,10 +340,15 @@ $pageTitle = 'Quản Lý Lượt Truy Cập';
                                             <th>Website</th>
                                             <th>IP</th>
                                             <th>Trình duyệt</th>
+                                            <th>Nhà mạng</th>
+                                            <th>Kết nối</th>
                                             <th>Hệ điều hành</th>
+                                            <th>Màn hình</th>
                                             <th>Vị trí</th>
-                                            <th>Thời gian</th>
+                                            <th>Trang xem</th>
+                                            <th>Thời gian online</th>
                                             <th>Loại</th>
+                                            <th>Chuyển đổi</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -350,14 +359,54 @@ $pageTitle = 'Quản Lý Lượt Truy Cập';
                                             <td><?php echo htmlspecialchars($visit['site_name']); ?></td>
                                             <td><?php echo htmlspecialchars($visit['ip_address']); ?></td>
                                             <td><?php echo htmlspecialchars($visit['browser'] . ' ' . $visit['browser_version']); ?></td>
+                                            <td><?php echo htmlspecialchars($visit['isp']); ?></td>
+                                            <td><?php echo htmlspecialchars($visit['connection_type']); ?></td>
                                             <td><?php echo htmlspecialchars($visit['os'] . ' ' . $visit['os_version']); ?></td>
+                                            <td><?php echo $visit['screen_width'] . 'x' . $visit['screen_height']; ?></td>
                                             <td><?php echo htmlspecialchars($visit['city'] . ', ' . $visit['country']); ?></td>
-                                            <td><?php echo date('d/m/Y H:i', strtotime($visit['visit_time'])); ?></td>
+                                            <td>
+                                                <span class="d-inline-block text-truncate" style="max-width: 150px;" title="<?php echo htmlspecialchars($visit['current_page']); ?>">
+                                                    <?php echo htmlspecialchars($visit['current_page']); ?>
+                                                </span>
+                                            </td>
+                                            <td><?php echo formatTime($visit['time_spent']); ?></td>
                                             <td>
                                                 <?php if ($visit['is_bot']): ?>
                                                 <span class="badge badge-bot">Bot (<?php echo round($visit['bot_score'] * 100); ?>%)</span>
                                                 <?php else: ?>
                                                 <span class="badge badge-human">Human</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                // Get click counts
+                                                $phoneClicks = isset($visit['phone_clicks']) ? $visit['phone_clicks'] : 0;
+                                                $zaloClicks = isset($visit['zalo_clicks']) ? $visit['zalo_clicks'] : 0;
+                                                $messengerClicks = isset($visit['messenger_clicks']) ? $visit['messenger_clicks'] : 0;
+                                                $mapsClicks = isset($visit['maps_clicks']) ? $visit['maps_clicks'] : 0;
+                                                
+                                                if ($phoneClicks > 0): ?>
+                                                <span class="badge badge-primary mr-1" title="Số lần bấm vào số điện thoại">
+                                                    <i class="fas fa-phone"></i> <?php echo $phoneClicks; ?>
+                                                </span>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($zaloClicks > 0): ?>
+                                                <span class="badge badge-info mr-1" title="Số lần bấm vào Zalo">
+                                                    <i class="fas fa-comment"></i> <?php echo $zaloClicks; ?>
+                                                </span>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($messengerClicks > 0): ?>
+                                                <span class="badge badge-primary mr-1" title="Số lần bấm vào Messenger">
+                                                    <i class="fab fa-facebook-messenger"></i> <?php echo $messengerClicks; ?>
+                                                </span>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($mapsClicks > 0): ?>
+                                                <span class="badge badge-success mr-1" title="Số lần bấm vào Google Maps">
+                                                    <i class="fas fa-map-marker-alt"></i> <?php echo $mapsClicks; ?>
+                                                </span>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
