@@ -133,27 +133,33 @@ $zaloValue = !empty($zalo) ? $zalo : 'https://zalo.me/0916152929';
 $messengerValue = !empty($messenger) ? $messenger : 'https://m.me/dienmaytotvietnam';
 $mapsValue = !empty($maps) ? $maps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
 
+// Generate simple embed code
+$embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" 
+data-api-key="' . $apiKey . '" 
+data-phone="' . $phoneValue . '" 
+data-zalo="' . $zaloValue . '" 
+data-messenger="' . $messengerValue . '" 
+data-maps="' . $mapsValue . '"></script>';
+
 // Generate PHP code snippet
 $phpSnippet = "<?php\n";
 $phpSnippet .= "// Add this code at the end of your page, before the closing </body> tag\n";
-$phpSnippet .= "echo chuyendoi_tracking('{$apiKey}', [\n";
-$phpSnippet .= "    'phone' => '{$phoneValue}',\n";
-$phpSnippet .= "    'zalo' => '{$zaloValue}',\n";
-$phpSnippet .= "    'messenger' => '{$messengerValue}',\n";
-$phpSnippet .= "    'maps' => '{$mapsValue}'\n";
-$phpSnippet .= "]);\n";
-$phpSnippet .= "?>";
+$phpSnippet .= "?>\n";
+$phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" 
+data-api-key="<?php echo \'' . $apiKey . '\'; ?>" 
+data-phone="<?php echo $phone; ?>" 
+data-zalo="<?php echo $zalo; ?>" 
+data-messenger="<?php echo $messenger; ?>" 
+data-maps="<?php echo $maps; ?>"></script>';
 
 // Generate JavaScript code snippet
-$jsSnippet = "import ChuyenDoiTracker from '../components/ChuyenDoiTracker';\n\n";
-$jsSnippet .= "// Add this component at the end of your page layout\n";
-$jsSnippet .= "<ChuyenDoiTracker\n";
-$jsSnippet .= "  apiKey=\"{$apiKey}\"\n";
-$jsSnippet .= "  phone=\"{$phoneValue}\"\n";
-$jsSnippet .= "  zalo=\"{$zaloValue}\"\n";
-$jsSnippet .= "  messenger=\"{$messengerValue}\"\n";
-$jsSnippet .= "  maps=\"{$mapsValue}\"\n";
-$jsSnippet .= "/>";
+$jsSnippet = "// Add this code at the end of your page, before the closing </body> tag\n";
+$jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" 
+data-api-key="' . $apiKey . '" 
+data-phone="' . $phoneValue . '" 
+data-zalo="' . $zaloValue . '" 
+data-messenger="' . $messengerValue . '" 
+data-maps="' . $mapsValue . '"></script>';
 
 // Page title
 $pageTitle = 'Edit Website';
