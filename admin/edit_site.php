@@ -736,64 +736,72 @@ export default ChuyenDoiTracker;
     // Update button preview when style is changed
     document.getElementById('button_style').addEventListener('change', function() {
         const selectedStyle = this.value;
-        const name = document.getElementById('name').value;
-        const domain = document.getElementById('domain').value;
         const phone = document.getElementById('phone').value;
         const zalo = document.getElementById('zalo').value;
         const messenger = document.getElementById('messenger').value;
         const maps = document.getElementById('maps').value;
         const showButtons = document.getElementById('show_buttons').checked;
+        const apiKey = document.getElementById('api_key').value;
         
-        // Create a form to submit the data
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.style.display = 'none';
+        // Show loading message in preview container
+        const previewContainer = document.querySelector('.preview-container div');
+        if (previewContainer) {
+            previewContainer.innerHTML = '<div class="text-center p-5"><i class="fas fa-spinner fa-spin"></i> Loading preview...</div>';
+        }
         
-        // Add the required fields
-        const nameField = document.createElement('input');
-        nameField.name = 'name';
-        nameField.value = name;
-        form.appendChild(nameField);
+        // Make AJAX request to get updated button HTML
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '../button_preview.php?api_key=' + encodeURIComponent(apiKey) + 
+                 '&style=' + encodeURIComponent(selectedStyle) + 
+                 '&phone=' + encodeURIComponent(phone) + 
+                 '&zalo=' + encodeURIComponent(zalo) + 
+                 '&messenger=' + encodeURIComponent(messenger) + 
+                 '&maps=' + encodeURIComponent(maps) + 
+                 '&show_labels=1', true);
         
-        const domainField = document.createElement('input');
-        domainField.name = 'domain';
-        domainField.value = domain;
-        form.appendChild(domainField);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Extract the button HTML from the response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(xhr.responseText, 'text/html');
+                const previewContent = doc.querySelector('.preview-container');
+                
+                if (previewContent && previewContainer) {
+                    // Update the preview container with the new button HTML
+                    previewContainer.innerHTML = '<p><strong>Preview of Conversion Buttons:</strong></p>' +
+                                               '<p>The buttons will appear on your website as shown below:</p>';
+                    previewContainer.innerHTML += previewContent.innerHTML;
+                    
+                    // Add a message to remind the user to click Update
+                    previewContainer.innerHTML += '<div class="alert alert-info mt-3" id="preview-update-alert">' +
+                        '<i class="fas fa-info-circle"></i> <strong>Preview updated!</strong> ' +
+                        'Click the "Update Website" button to save your changes.' +
+                        '</div>';
+                    
+                    // Remove the alert after 5 seconds
+                    setTimeout(() => {
+                        const alert = document.getElementById('preview-update-alert');
+                        if (alert) {
+                            alert.remove();
+                        }
+                    }, 5000);
+                }
+            } else {
+                // Show error message if request failed
+                if (previewContainer) {
+                    previewContainer.innerHTML = '<div class="alert alert-danger">Error loading preview. Please try again.</div>';
+                }
+            }
+        };
         
-        // Add the style and contact fields
-        const styleField = document.createElement('input');
-        styleField.name = 'button_style';
-        styleField.value = selectedStyle;
-        form.appendChild(styleField);
+        xhr.onerror = function() {
+            // Show error message if request failed
+            if (previewContainer) {
+                previewContainer.innerHTML = '<div class="alert alert-danger">Error loading preview. Please try again.</div>';
+            }
+        };
         
-        const phoneField = document.createElement('input');
-        phoneField.name = 'phone';
-        phoneField.value = phone;
-        form.appendChild(phoneField);
-        
-        const zaloField = document.createElement('input');
-        zaloField.name = 'zalo';
-        zaloField.value = zalo;
-        form.appendChild(zaloField);
-        
-        const messengerField = document.createElement('input');
-        messengerField.name = 'messenger';
-        messengerField.value = messenger;
-        form.appendChild(messengerField);
-        
-        const mapsField = document.createElement('input');
-        mapsField.name = 'maps';
-        mapsField.value = maps;
-        form.appendChild(mapsField);
-        
-        const showButtonsField = document.createElement('input');
-        showButtonsField.name = 'show_buttons';
-        showButtonsField.value = showButtons ? '1' : '0';
-        form.appendChild(showButtonsField);
-        
-        // Add the form to the document and submit it
-        document.body.appendChild(form);
-        form.submit();
+        xhr.send();
         });
     </script>
 </body>
