@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/functions.php';
 function generateButtonHtml($options = []) {
     // Default options
     $defaults = [
-        'style' => 'fab', // 'fab' or 'bar'
+        'style' => 'fab', // 'fab', 'bar', or 'sticky-right'
         'phone' => '',
         'zalo' => '',
         'messenger' => '',
@@ -37,8 +37,13 @@ function generateButtonHtml($options = []) {
     // Generate HTML based on style
     if ($options['style'] === 'fab') {
         return generateFabButtonHtml($options);
-    } else {
+    } else if ($options['style'] === 'bar') {
         return generateBarButtonHtml($options);
+    } else if ($options['style'] === 'sticky-right') {
+        return generateStickyRightButtonsHtml($options);
+    } else {
+        // Default to FAB style if unknown style is provided
+        return generateFabButtonHtml($options);
     }
 }
 
@@ -158,6 +163,39 @@ function generateBarButtonHtml($options) {
 }
 
 /**
+ * Generate sticky right buttons HTML (Style 2)
+ * 
+ * @param array $options Button options
+ * @return string Button HTML
+ */
+function generateStickyRightButtonsHtml($options) {
+    // We only need phone and zalo for this style
+    if (empty($options['phone']) && empty($options['zalo'])) {
+        return '<!-- Error: Phone or Zalo is required for sticky-right style -->';
+    }
+    
+    $html = '<div class="sticky-right-buttons">' . PHP_EOL;
+    
+    // Phone button (always first)
+    if (!empty($options['phone'])) {
+        $html .= '   <a class="button-item call-button" href="tel:' . htmlspecialchars($options['phone']) . '" rel="nofollow">' . PHP_EOL;
+        $html .= '      <div class="button-icon call-icon"></div>' . PHP_EOL;
+        $html .= '   </a>' . PHP_EOL;
+    }
+    
+    // Zalo button (always second)
+    if (!empty($options['zalo'])) {
+        $html .= '   <a class="button-item zalo-button" href="' . htmlspecialchars($options['zalo']) . '" target="_blank" rel="nofollow noopener">' . PHP_EOL;
+        $html .= '      <div class="button-icon zalo-icon"></div>' . PHP_EOL;
+        $html .= '   </a>' . PHP_EOL;
+    }
+    
+    $html .= '</div>' . PHP_EOL;
+    
+    return $html;
+}
+
+/**
  * Generate tracking script
  * 
  * @param string $apiKey API key
@@ -168,7 +206,7 @@ function generateTrackingScript($apiKey, $options = []) {
     // Default options
     $defaults = [
         'debug' => false,
-        'buttonSelector' => '.fab-wrapper, .bbas-pc-contact-bar',
+        'buttonSelector' => '.fab-wrapper, .bbas-pc-contact-bar, .sticky-right-buttons',
         'apiUrl' => API_URL . '/track.php'
     ];
     

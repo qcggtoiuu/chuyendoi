@@ -380,3 +380,82 @@ i.icon-cps-face {
     width: 44px;
     height: 44px;
 }
+
+/* Style 2 - Right side sticky buttons with only call and zalo */
+.sticky-right-buttons {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sticky-right-buttons .button-item {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.sticky-right-buttons .button-item:hover {
+    transform: scale(1.1);
+}
+
+.sticky-right-buttons .call-button {
+    background-color: #1a56db;
+    position: relative;
+}
+
+.sticky-right-buttons .call-button::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(211, 219, 255, 0.7);
+    z-index: -1;
+    animation: pulse 1.5s infinite;
+}
+
+.sticky-right-buttons .zalo-button {
+    background-color: #1a56db;
+}
+
+.sticky-right-buttons .button-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sticky-right-buttons .call-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .2l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.3-1.1-.5-2.3-.5-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1zM12 3v10l3-3h6V3h-9z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.sticky-right-buttons .zalo-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12.49 10.272v-.45h1.347v6.322h-1.347v-.453c0-.16.01-.16-.142-.16h-.453c-1.353 0-2.596-.545-3.497-1.428-.901-.883-1.465-2.122-1.465-3.453 0-1.331.564-2.57 1.465-3.453.901-.883 2.144-1.428 3.497-1.428h.453c.152 0 .142 0 .142-.16v-.45h1.347v.45c0 .16-.01.16.142.16h.453c1.353 0 2.596.545 3.497 1.428.901.883 1.465 2.122 1.465 3.453 0 1.331-.564 2.57-1.465 3.453-.901.883-2.144 1.428-3.497 1.428h-.453c-.152 0-.142 0-.142.16v.453H12.5v-.45zm1.74-5.322h-.453c-.152 0-.142 0-.142.16v3.774c0 .16-.01.16.142.16h.453c.802 0 1.535-.324 2.068-.85.534-.524.866-1.253.866-2.047 0-.794-.332-1.523-.866-2.048-.533-.525-1.266-.85-2.068-.85zm-2.068 0c-.802 0-1.535.324-2.068.85-.534.525-.866 1.254-.866 2.048 0 .794.332 1.523.866 2.047.533.526 1.266.85 2.068.85h.453c.152 0 .142 0 .142-.16V5.11c0-.16.01-.16-.142-.16h-.453z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}

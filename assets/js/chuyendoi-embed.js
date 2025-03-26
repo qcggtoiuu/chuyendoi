@@ -45,7 +45,7 @@
             window.Tracker.init({
                 apiKey: apiKey,
                 apiUrl: apiUrl,
-                buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar',
+                buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar, .sticky-right-buttons',
                 debug: debug
             });
         };
@@ -164,6 +164,34 @@
         return html;
     };
     
+    // Generate sticky right buttons HTML (Style 2)
+    const generateStickyRightButtonsHtml = function() {
+        // We only need phone and zalo for this style
+        if (!phone && !zalo) {
+            return ''; // No required contact methods provided
+        }
+        
+        let html = '<div class="sticky-right-buttons">';
+        
+        // Phone button (always first)
+        if (phone) {
+            html += `<a class="button-item call-button" href="tel:${phone}" rel="nofollow">`;
+            html += '<div class="button-icon call-icon"></div>';
+            html += '</a>';
+        }
+        
+        // Zalo button (always second)
+        if (zalo) {
+            html += `<a class="button-item zalo-button" href="${zalo}" target="_blank" rel="nofollow noopener">`;
+            html += '<div class="button-icon zalo-icon"></div>';
+            html += '</a>';
+        }
+        
+        html += '</div>';
+        
+        return html;
+    };
+    
     // Check if buttons should be displayed and get contact information
     const checkButtonsVisibility = function(callback) {
         // Make API request to check if buttons should be displayed and get contact information
@@ -210,7 +238,16 @@
         checkButtonsVisibility(function(showButtons) {
             // Generate buttons if enabled
             if (showButtons) {
-                const buttonHtml = style === 'fab' ? generateFabButtonHtml() : generateBarButtonHtml();
+                let buttonHtml = '';
+                
+                // Generate HTML based on style
+                if (style === 'fab') {
+                    buttonHtml = generateFabButtonHtml();
+                } else if (style === 'bar') {
+                    buttonHtml = generateBarButtonHtml();
+                } else if (style === 'sticky-right') {
+                    buttonHtml = generateStickyRightButtonsHtml();
+                }
                 
                 // Insert buttons into the page
                 if (buttonHtml) {

@@ -140,6 +140,7 @@ $embedCode = htmlspecialchars($trackingCode);
                                 <select class="form-control" id="style" name="style">
                                     <option value="fab" <?php echo $style === 'fab' ? 'selected' : ''; ?>>Floating Action Button</option>
                                     <option value="bar" <?php echo $style === 'bar' ? 'selected' : ''; ?>>Contact Bar</option>
+                                    <option value="sticky-right" <?php echo $style === 'sticky-right' ? 'selected' : ''; ?>>Sticky Right (Zalo & Call)</option>
                                 </select>
                             </div>
                             
