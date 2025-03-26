@@ -144,32 +144,17 @@ if ($showEmbedCode) {
     $mapsValue = !empty($newSiteMaps) ? $newSiteMaps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
     
     // Generate simple embed code
-    $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" 
-    data-api-key="' . $newSiteApiKey . '" 
-    data-phone="' . $phoneValue . '" 
-    data-zalo="' . $zaloValue . '" 
-    data-messenger="' . $messengerValue . '" 
-    data-maps="' . $mapsValue . '"></script>';
+    $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '" data-phone="' . $phoneValue . '" data-zalo="' . $zaloValue . '" data-messenger="' . $messengerValue . '" data-maps="' . $mapsValue . '"></script>';
     
     // Generate PHP code snippet
     $phpSnippet = "<?php\n";
     $phpSnippet .= "// Add this code at the end of your page, before the closing </body> tag\n";
     $phpSnippet .= "?>\n";
-    $phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" 
-    data-api-key="<?php echo \'' . $newSiteApiKey . '\'; ?>" 
-    data-phone="<?php echo $phone; ?>" 
-    data-zalo="<?php echo $zalo; ?>" 
-    data-messenger="<?php echo $messenger; ?>" 
-    data-maps="<?php echo $maps; ?>"></script>';
+    $phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="<?php echo \'' . $newSiteApiKey . '\'; ?>" data-phone="<?php echo $phone; ?>" data-zalo="<?php echo $zalo; ?>" data-messenger="<?php echo $messenger; ?>" data-maps="<?php echo $maps; ?>"></script>';
     
     // Generate JavaScript code snippet
     $jsSnippet = "// Add this code at the end of your page, before the closing </body> tag\n";
-    $jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" 
-    data-api-key="' . $newSiteApiKey . '" 
-    data-phone="' . $phoneValue . '" 
-    data-zalo="' . $zaloValue . '" 
-    data-messenger="' . $messengerValue . '" 
-    data-maps="' . $mapsValue . '"></script>';
+    $jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '" data-phone="' . $phoneValue . '" data-zalo="' . $zaloValue . '" data-messenger="' . $messengerValue . '" data-maps="' . $mapsValue . '"></script>';
 }
 
 // Page title
