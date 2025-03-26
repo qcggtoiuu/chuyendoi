@@ -106,10 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Generate button options
 $buttonOptions = [
     'style' => 'fab',
-    'phone' => !empty($phone) ? $phone : '0916152929', // Default phone if empty
-    'zalo' => !empty($zalo) ? $zalo : 'https://zalo.me/0916152929', // Default zalo if empty
-    'messenger' => !empty($messenger) ? $messenger : 'https://m.me/dienmaytotvietnam', // Default messenger if empty
-    'maps' => !empty($maps) ? $maps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8', // Default maps if empty
+    'phone' => !empty($phone) ? $phone : '', // No default phone if empty
+    'zalo' => !empty($zalo) ? $zalo : '', // No default zalo if empty
+    'messenger' => !empty($messenger) ? $messenger : '', // No default messenger if empty
+    'maps' => !empty($maps) ? $maps : '', // No default maps if empty
     'show_labels' => true,
     'primary_color' => '#3961AA',
     'animation' => true
@@ -127,11 +127,11 @@ $trackingCode = generateTrackingCode($apiKey, $buttonOptions, $scriptOptions);
 // Get embed code
 $embedCode = htmlspecialchars($trackingCode);
 
-// Get default or provided values for code snippets
-$phoneValue = !empty($phone) ? $phone : '0916152929';
-$zaloValue = !empty($zalo) ? $zalo : 'https://zalo.me/0916152929';
-$messengerValue = !empty($messenger) ? $messenger : 'https://m.me/dienmaytotvietnam';
-$mapsValue = !empty($maps) ? $maps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
+// Get provided values for code snippets (no defaults)
+$phoneValue = !empty($phone) ? $phone : '';
+$zaloValue = !empty($zalo) ? $zalo : '';
+$messengerValue = !empty($messenger) ? $messenger : '';
+$mapsValue = !empty($maps) ? $maps : '';
 
 // Generate simple embed code
 $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $apiKey . '" data-phone="' . $phoneValue . '" data-zalo="' . $zaloValue . '" data-messenger="' . $messengerValue . '" data-maps="' . $mapsValue . '"></script>';

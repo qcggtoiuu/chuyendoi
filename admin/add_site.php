@@ -113,13 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Generate embedding code if a site was just added
 if ($showEmbedCode) {
-    // Generate button options with default values if empty
+    // Generate button options without default values if empty
     $buttonOptions = [
         'style' => 'fab',
-        'phone' => !empty($newSitePhone) ? $newSitePhone : '0916152929',
-        'zalo' => !empty($newSiteZalo) ? $newSiteZalo : 'https://zalo.me/0916152929',
-        'messenger' => !empty($newSiteMessenger) ? $newSiteMessenger : 'https://m.me/dienmaytotvietnam',
-        'maps' => !empty($newSiteMaps) ? $newSiteMaps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8',
+        'phone' => !empty($newSitePhone) ? $newSitePhone : '',
+        'zalo' => !empty($newSiteZalo) ? $newSiteZalo : '',
+        'messenger' => !empty($newSiteMessenger) ? $newSiteMessenger : '',
+        'maps' => !empty($newSiteMaps) ? $newSiteMaps : '',
         'show_labels' => true,
         'primary_color' => '#3961AA',
         'animation' => true
@@ -137,11 +137,11 @@ if ($showEmbedCode) {
     // Get embed code
     $embedCode = htmlspecialchars($trackingCode);
     
-    // Get default or provided values for code snippets
-    $phoneValue = !empty($newSitePhone) ? $newSitePhone : '0916152929';
-    $zaloValue = !empty($newSiteZalo) ? $newSiteZalo : 'https://zalo.me/0916152929';
-    $messengerValue = !empty($newSiteMessenger) ? $newSiteMessenger : 'https://m.me/dienmaytotvietnam';
-    $mapsValue = !empty($newSiteMaps) ? $newSiteMaps : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
+    // Get provided values for code snippets (no defaults)
+    $phoneValue = !empty($newSitePhone) ? $newSitePhone : '';
+    $zaloValue = !empty($newSiteZalo) ? $newSiteZalo : '';
+    $messengerValue = !empty($newSiteMessenger) ? $newSiteMessenger : '';
+    $mapsValue = !empty($newSiteMaps) ? $newSiteMaps : '';
     
     // Generate simple embed code
     $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '" data-phone="' . $phoneValue . '" data-zalo="' . $zaloValue . '" data-messenger="' . $messengerValue . '" data-maps="' . $mapsValue . '"></script>';

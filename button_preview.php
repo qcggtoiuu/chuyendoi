@@ -11,10 +11,10 @@ require_once __DIR__ . '/button.php';
 // Check if API key is provided
 $apiKey = isset($_GET['api_key']) ? $_GET['api_key'] : '';
 $style = isset($_GET['style']) ? $_GET['style'] : 'fab';
-$phone = isset($_GET['phone']) ? $_GET['phone'] : '0916152929';
-$zalo = isset($_GET['zalo']) ? $_GET['zalo'] : 'https://zalo.me/0916152929';
-$messenger = isset($_GET['messenger']) ? $_GET['messenger'] : 'https://m.me/dienmaytotvietnam';
-$maps = isset($_GET['maps']) ? $_GET['maps'] : 'https://goo.gl/maps/Z4pipWWc1GW2aY6p8';
+$phone = isset($_GET['phone']) ? $_GET['phone'] : '';
+$zalo = isset($_GET['zalo']) ? $_GET['zalo'] : '';
+$messenger = isset($_GET['messenger']) ? $_GET['messenger'] : '';
+$maps = isset($_GET['maps']) ? $_GET['maps'] : '';
 $showLabels = isset($_GET['show_labels']) ? ($_GET['show_labels'] === '1') : true;
 $primaryColor = isset($_GET['primary_color']) ? $_GET['primary_color'] : '#3961AA';
 $animation = isset($_GET['animation']) ? ($_GET['animation'] === '1') : true;
