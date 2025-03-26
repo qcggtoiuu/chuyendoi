@@ -11,11 +11,8 @@ require_once __DIR__ . '/../button.php';
 // Start session
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
+// Check if user is logged in and redirect if not
+requireLogin();
 
 // Get database instance
 $db = Database::getInstance();

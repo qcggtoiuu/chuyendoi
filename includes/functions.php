@@ -489,3 +489,46 @@ function shouldHideButtons($visitorData) {
     
     return false;
 }
+
+/**
+ * Check if user is authenticated, if not redirect to login page with return URL
+ * 
+ * @return void
+ */
+function requireLogin() {
+    // Start session if not already started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    // Check if user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        // Store current URL for redirect after login
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+        $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        
+        // Store the URL in session
+        $_SESSION['redirect_url'] = $currentUrl;
+        
+        // Redirect to login page
+        header('Location: ' . getAdminUrl() . 'login.php');
+        exit;
+    }
+}
+
+/**
+ * Get the admin URL based on the current script path
+ * 
+ * @return string Admin URL with trailing slash
+ */
+function getAdminUrl() {
+    $scriptPath = $_SERVER['SCRIPT_NAME'];
+    $adminPos = strpos($scriptPath, '/admin/');
+    
+    if ($adminPos !== false) {
+        return substr($scriptPath, 0, $adminPos) . '/admin/';
+    }
+    
+    // Fallback to relative path
+    return '/admin/';
+}

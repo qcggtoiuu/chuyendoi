@@ -12,7 +12,14 @@ session_start();
 
 // Check if user is already logged in
 if (isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    // If there's a redirect URL stored in the session, go there
+    if (isset($_SESSION['redirect_url'])) {
+        $redirect_url = $_SESSION['redirect_url'];
+        unset($_SESSION['redirect_url']); // Clear the stored URL
+        header('Location: ' . $redirect_url);
+    } else {
+        header('Location: index.php');
+    }
     exit;
 }
 
@@ -67,8 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->bind_param("i", $user['id']);
                     $stmt->execute();
                     
-                    // Redirect to dashboard
-                    header('Location: index.php');
+                    // Check if there's a redirect URL stored in the session
+                    if (isset($_SESSION['redirect_url'])) {
+                        $redirect_url = $_SESSION['redirect_url'];
+                        unset($_SESSION['redirect_url']); // Clear the stored URL
+                        header('Location: ' . $redirect_url);
+                    } else {
+                        // Redirect to dashboard
+                        header('Location: index.php');
+                    }
                     exit;
                 } else {
                     $error = 'Tài khoản của bạn đang chờ phê duyệt từ quản trị viên';
