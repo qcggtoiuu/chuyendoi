@@ -194,6 +194,11 @@ $pageTitle = 'Dashboard';
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="realtime.php">
+                            <i class="fas fa-clock"></i> Real-time
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="clicks.php">
                             <i class="fas fa-mouse-pointer"></i> Clicks
                         </a>
@@ -255,6 +260,23 @@ $pageTitle = 'Dashboard';
                 
                 <!-- Dashboard content -->
                 <div class="row">
+                    <!-- Real-time tracking card -->
+                    <div class="col-12 mb-4">
+                        <div class="card card-dashboard bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-2">Theo Dõi Truy Cập Thời Gian Thực</h4>
+                                        <p class="mb-0">Xem người truy cập trong 60 phút gần nhất với cập nhật tự động.</p>
+                                    </div>
+                                    <a href="realtime.php" class="btn btn-primary">
+                                        <i class="fas fa-clock mr-1"></i> Mở Trang Theo Dõi Thời Gian Thực
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Sites count -->
                     <div class="col-md-4 col-xl-3">
                         <div class="card card-dashboard bg-light">
