@@ -7,7 +7,7 @@
     
     // Configuration
     var config = {
-        apiUrl: 'https://chuyendoi.io.vn/api/track.php', // Domain for the tracking system
+        apiUrl: '/api/track.php', // Relative URL for the tracking system
         apiKey: '', // Will be set during initialization
         visitId: null,
         botScore: 0,
@@ -129,7 +129,7 @@
     function loadCSS() {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'https://chuyendoi.io.vn/assets/css/buttons.css';
+        link.href = '/assets/css/buttons.css';
         document.head.appendChild(link);
     }
     
@@ -137,7 +137,7 @@
     function checkButtonsVisibility(callback) {
         // Make API request to check if buttons should be displayed and get contact information
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://chuyendoi.io.vn/api/check_buttons.php?api_key=' + config.apiKey, true);
+        xhr.open('GET', '/api/check_buttons.php?api_key=' + config.apiKey, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 let showButtons = true;
