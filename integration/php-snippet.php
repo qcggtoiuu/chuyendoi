@@ -41,9 +41,41 @@ function chuyendoi_tracking($apiKey, $options = []) {
     
     $queryString = http_build_query($queryParams);
     
-    // Generate tracking code
+    // Generate tracking code with data attributes
     $html = '<!-- ChuyenDoi Tracking System -->' . PHP_EOL;
-    $html .= '<script src="https://chuyendoi.io.vn/track.php?' . $queryString . '"></script>' . PHP_EOL;
+    $html .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-track.js"' . PHP_EOL;
+    $html .= '        data-api-key="' . htmlspecialchars($apiKey) . '"' . PHP_EOL;
+    
+    // Add optional data attributes
+    if (!empty($options['phone'])) {
+        $html .= '        data-phone="' . htmlspecialchars($options['phone']) . '"' . PHP_EOL;
+    }
+    if (!empty($options['zalo'])) {
+        $html .= '        data-zalo="' . htmlspecialchars($options['zalo']) . '"' . PHP_EOL;
+    }
+    if (!empty($options['messenger'])) {
+        $html .= '        data-messenger="' . htmlspecialchars($options['messenger']) . '"' . PHP_EOL;
+    }
+    if (!empty($options['maps'])) {
+        $html .= '        data-maps="' . htmlspecialchars($options['maps']) . '"' . PHP_EOL;
+    }
+    if ($options['style'] !== 'fab') {
+        $html .= '        data-style="' . htmlspecialchars($options['style']) . '"' . PHP_EOL;
+    }
+    if (!$options['show_labels']) {
+        $html .= '        data-show-labels="false"' . PHP_EOL;
+    }
+    if ($options['primary_color'] !== '#3961AA') {
+        $html .= '        data-primary-color="' . htmlspecialchars($options['primary_color']) . '"' . PHP_EOL;
+    }
+    if (!$options['animation']) {
+        $html .= '        data-animation="false"' . PHP_EOL;
+    }
+    if ($options['debug']) {
+        $html .= '        data-debug="true"' . PHP_EOL;
+    }
+    
+    $html .= '></script>' . PHP_EOL;
     
     return $html;
 }

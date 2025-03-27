@@ -142,17 +142,17 @@ if ($showEmbedCode) {
     $mapsValue = !empty($newSiteMaps) ? $newSiteMaps : '';
     
     // Generate simple embed code - no need to include contact info as it will be fetched from API
-    $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '"></script>';
+    $embedCode = '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-track.js" data-api-key="' . $newSiteApiKey . '"></script>';
     
     // Generate PHP code snippet
     $phpSnippet = "<?php\n";
     $phpSnippet .= "// Add this code at the end of your page, before the closing </body> tag\n";
     $phpSnippet .= "?>\n";
-    $phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="<?php echo \'' . $newSiteApiKey . '\'; ?>"></script>';
+    $phpSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-track.js" data-api-key="<?php echo \'' . $newSiteApiKey . '\'; ?>"></script>';
     
     // Generate JavaScript code snippet
     $jsSnippet = "// Add this code at the end of your page, before the closing </body> tag\n";
-    $jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-embed.js" data-api-key="' . $newSiteApiKey . '"></script>';
+    $jsSnippet .= '<script src="https://chuyendoi.io.vn/assets/js/chuyendoi-track.js" data-api-key="' . $newSiteApiKey . '"></script>';
     
     // Note about the updated embed code
     $embedNote = '<div class="alert alert-info mt-3">

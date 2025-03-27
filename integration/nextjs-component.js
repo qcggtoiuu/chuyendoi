@@ -35,24 +35,30 @@ export default function ChuyenDoiTracker({
   useEffect(() => {
     // Load tracking script
     const script = document.createElement('script');
-    script.src = 'https://chuyendoi.io.vn/assets/js/tracker.js';
+    script.src = 'https://chuyendoi.io.vn/assets/js/chuyendoi-track.js';
     script.async = true;
     script.onload = function() {
       setIsLoaded(true);
       
-      // Initialize tracker
-      if (typeof window.Tracker !== 'undefined') {
-        window.Tracker.init({
-          apiKey: apiKey,
-          apiUrl: 'https://chuyendoi.io.vn/api/track.php',
-          buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar',
-          debug: debug
-        });
-        
+      // Initialize tracker if needed
+      if (typeof window.ChuyenDoi !== 'undefined') {
         // Check if buttons should be hidden
-        setHideButtons(window.Tracker.shouldHideButtons());
+        setHideButtons(window.ChuyenDoi.shouldHideButtons());
       }
     };
+    
+    // Add data attributes to script
+    script.setAttribute('data-api-key', apiKey);
+    if (debug) script.setAttribute('data-debug', 'true');
+    if (phone) script.setAttribute('data-phone', phone);
+    if (zalo) script.setAttribute('data-zalo', zalo);
+    if (messenger) script.setAttribute('data-messenger', messenger);
+    if (maps) script.setAttribute('data-maps', maps);
+    if (style) script.setAttribute('data-style', style);
+    if (showLabels === false) script.setAttribute('data-show-labels', 'false');
+    if (primaryColor) script.setAttribute('data-primary-color', primaryColor);
+    if (animation === false) script.setAttribute('data-animation', 'false');
+    
     document.head.appendChild(script);
     
     // Load CSS
@@ -80,8 +86,12 @@ export default function ChuyenDoiTracker({
     
     return () => {
       // Cleanup
-      document.head.removeChild(script);
-      document.head.removeChild(link);
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
     };
   }, [apiKey, style, phone, zalo, messenger, maps, showLabels, primaryColor, animation, debug]);
   

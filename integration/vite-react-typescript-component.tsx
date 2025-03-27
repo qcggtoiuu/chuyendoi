@@ -27,24 +27,32 @@ interface ChuyenDoiTrackerProps {
 }
 
 /**
- * Declare global Tracker interface for TypeScript
+ * Declare global ChuyenDoi interface for TypeScript
  */
-interface Tracker {
+interface ChuyenDoi {
   init: (options: {
     apiKey: string;
-    apiUrl: string;
-    buttonSelector: string;
-    debug: boolean;
+    debug?: boolean;
+    phone?: string;
+    zalo?: string;
+    messenger?: string;
+    maps?: string;
+    style?: string;
+    showLabels?: boolean;
+    primaryColor?: string;
+    animation?: boolean;
   }) => void;
   shouldHideButtons: () => boolean;
   trackClick: (element: HTMLElement) => void;
   trackEvent: (eventName: string, eventData: any) => void;
   isBot: () => boolean;
+  getVisitId: () => string | null;
+  getBotScore: () => number;
 }
 
 declare global {
   interface Window {
-    Tracker?: Tracker;
+    ChuyenDoi?: ChuyenDoi;
   }
 }
 
@@ -71,31 +79,31 @@ const ChuyenDoiTracker: FC<ChuyenDoiTrackerProps> = ({
   useEffect(() => {
     // Load tracking script
     const script = document.createElement('script');
-    script.src = 'https://chuyendoi.io.vn/assets/js/tracker.js';
+    script.src = 'https://chuyendoi.io.vn/assets/js/chuyendoi-track.js';
     script.async = true;
     script.onload = function() {
       setIsLoaded(true);
       
-      // Initialize tracker
-      if (typeof window.Tracker !== 'undefined') {
-        window.Tracker.init({
-          apiKey: apiKey,
-          apiUrl: 'https://chuyendoi.io.vn/api/track.php',
-          buttonSelector: '.fab-wrapper, .bbas-pc-contact-bar',
-          debug: debug
-        });
-        
+      // Initialize tracker if needed
+      if (typeof window.ChuyenDoi !== 'undefined') {
         // Check if buttons should be hidden
-        setHideButtons(window.Tracker.shouldHideButtons());
+        setHideButtons(window.ChuyenDoi.shouldHideButtons());
       }
     };
-    document.head.appendChild(script);
     
-    // Load CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://chuyendoi.io.vn/assets/css/buttons.css';
-    document.head.appendChild(link);
+    // Add data attributes to script
+    script.setAttribute('data-api-key', apiKey);
+    if (debug) script.setAttribute('data-debug', 'true');
+    if (phone) script.setAttribute('data-phone', phone);
+    if (zalo) script.setAttribute('data-zalo', zalo);
+    if (messenger) script.setAttribute('data-messenger', messenger);
+    if (maps) script.setAttribute('data-maps', maps);
+    if (style) script.setAttribute('data-style', style);
+    if (showLabels === false) script.setAttribute('data-show-labels', 'false');
+    if (primaryColor) script.setAttribute('data-primary-color', primaryColor);
+    if (animation === false) script.setAttribute('data-animation', 'false');
+    
+    document.head.appendChild(script);
     
     // Fetch embed code
     fetch(`https://chuyendoi.io.vn/button_preview.php?api_key=${apiKey}&style=${style}&phone=${encodeURIComponent(phone)}&zalo=${encodeURIComponent(zalo)}&messenger=${encodeURIComponent(messenger)}&maps=${encodeURIComponent(maps)}&show_labels=${showLabels ? '1' : '0'}&primary_color=${encodeURIComponent(primaryColor)}&animation=${animation ? '1' : '0'}`)
@@ -114,10 +122,20 @@ const ChuyenDoiTracker: FC<ChuyenDoiTrackerProps> = ({
         console.error('Error fetching embed code:', error);
       });
     
+    // Load CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://chuyendoi.io.vn/assets/css/buttons.css';
+    document.head.appendChild(link);
+
     return () => {
       // Cleanup
-      document.head.removeChild(script);
-      document.head.removeChild(link);
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
     };
   }, [apiKey, style, phone, zalo, messenger, maps, showLabels, primaryColor, animation, debug]);
   
